@@ -1,6 +1,7 @@
 # RION Ops for Java
 
  - [Introduction](#introduction)
+ - [RION Ops Tutorial](#rion-ops-tutorial)
  - [RION](#rion)
  - [What We Mean by Object in RION](#what-we-mean-by-object-in-rion)
  - [RION Field Types](#rion-field-types)
@@ -15,6 +16,16 @@
 
 # Introduction
 RION Ops for Java is a toolkit for reading and writing the compact, fast, binary data format RION.
+
+
+
+<a name="rion-ops-tutorial">
+
+# RION Ops Tutorial
+
+This README file only contains an introduction to what RION and RION Ops are. To learn how to use RION Ops,
+see the [RION Ops Tutorial](http://tutorials.jenkov.com/rion-ops-java/index.html) .
+
 
 
 <a name="rion"></a>
