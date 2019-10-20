@@ -6,6 +6,9 @@
  - [RION Field Types](#rion-field-types)
  - [TION - Textual Internet Object Notation](#tion)
  - [RION vs ION](#rion-vs-ion)
+ - [Maven Dependency](#maven-dependency)
+ - [Version History](#version-history)
+
 
 
 <a name="introduction"></a>
@@ -86,3 +89,30 @@ named ION. Therefore we have renamed Nanosai ION to RION to clearly distinguish 
 Nanosai ION and Amazon ION are similar in structure, but we believe Nanosai ION has a few advantages over Amazon ION,
 especially when working with the data in its raw form (binary form). However, going forward we will call Nanosai ION
 for RION.
+
+
+
+<a name="maven-dependency"></a>
+
+# Maven Dependency
+
+If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks like this:
+
+    <dependency>
+        <groupId>com.nanosai</groupId>
+        <artifactId>rion-ops</artifactId>
+        <version>0.5.2</version>
+    </dependency>
+
+Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
+the next section.
+
+
+<a name="version-history"></a>
+
+# Version History
+
+| Version | Java Version | Change |
+|---------|--------------|--------|
+| 0.5.2   | Java 8       | First release |
+
