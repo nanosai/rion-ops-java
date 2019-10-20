@@ -24,7 +24,7 @@ RION Ops for Java is a toolkit for reading and writing the compact, fast, binary
 # RION Ops Tutorial
 
 This README file only contains an introduction to what RION and RION Ops are. To learn how to use RION Ops,
-see the [RION Ops Tutorial](http://tutorials.jenkov.com/rion-ops-java/index.html) .
+see the [RION Ops for Java Tutorial](http://tutorials.jenkov.com/rion-ops-java/index.html) .
 
 
 
