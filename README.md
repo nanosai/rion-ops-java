@@ -1,9 +1,11 @@
 # RION Ops for Java
 
  - [Introduction](#introduction)
- - [RION vs ION](#rion-vs-ion)
+ - [RION](#rion)
  - [What We Mean by Object in RION](#what-we-mean-by-object-in-rion)
+ - [RION Field Types](#rion-field-types)
  - [TION - Textual Internet Object Notation](#tion)
+ - [RION vs ION](#rion-vs-ion)
 
 
 <a name="introduction"></a>
@@ -12,14 +14,29 @@
 RION Ops for Java is a toolkit for reading and writing the compact, fast, binary data format RION.
 
 
-<a name="rion-vs-ion"></a>
+<a name="rion"></a>
 
-# RION vs. ION
-RION was first released under the name ION, but since its release Amazon has released its own binary data format
-named ION. Therefore we have renamed Nanosai ION to RION to clearly distinguish it from Amazon ION. Actually,
-Nanosai ION and Amazon ION are similar in structure, but we believe Nanosai ION has a few advantages over Amazon ION,
-especially when working with the data in its raw form (binary form). However, going forward we will call Nanosai ION
-for RION.
+# RION - Raw Internet Object Notation
+RION is short for Raw Internet Object Notation. By "Raw" we mean "in its raw form - as encoded in bytes".
+
+
+
+<a name="what-we-mean-by-object-in-rion"></a>
+
+# What We Mean by "Object" in RION.
+The term "Object" in "Raw Internet Object Notation" has a slightly different meaning from what it means in JSON.
+By "object" we mean "any individual piece of data that it makes sense to represent / read / write / exchange individually".
+According to that interpretation, a single integer field is an object. A Key + value pair can be interpreted as two objects
+even though they logically represent a composite object (key + value). A set of key + value pairs can be considered
+separate, small objects even though they logically represent one big object with properties with each property consisting
+of a key + value pair.
+
+As you can see in the RION field list above, RION has a special type of field called an "Object" which can contain
+nested RION fields. The "Object" field type is a commonly used RION field type, but it is not this field type we
+refer to in the name RION. It is totally fine for a RION file or stream to contain multiple, separate non-"Object"
+RION fields. This is different from JSON, where a JSON file can only contain either a full JSON object or array.
+This is not so for RION. A RION file could contain a single integer RION field, or multiple fields, including an
+"Object" field if that makes sense for the given use case.
 
 
 <a name="rion-field-types"></a>
@@ -48,29 +65,6 @@ The rest of the field types are simple field types which contain a single data v
 
 
 
-<a name="rion"></a>
-
-# RION - Raw Internet Object Notation
-RION is short for Raw Internet Object Notation. By "Raw" we mean "in its raw form - as encoded in bytes".
-
-
-
-<a name="what-we-mean-by-object-in-rion"></a>
-
-# What We Mean by "Object" in RION.
-The term "Object" in "Raw Internet Object Notation" has a slightly different meaning from what it means in JSON.
-By "object" we mean "any individual piece of data that it makes sense to represent / read / write / exchange individually".
-According to that interpretation, a single integer field is an object. A Key + value pair can be interpreted as two objects
-even though they logically represent a composite object (key + value). A set of key + value pairs can be considered
-separate, small objects even though they logically represent one big object with properties with each property consisting
-of a key + value pair.
-
-As you can see in the RION field list above, RION has a special type of field called an "Object" which can contain
-nested RION fields. The "Object" field type is a commonly used RION field type, but it is not this field type we
-refer to in the name RION. It is totally fine for a RION file or stream to contain multiple, separate non-"Object"
-RION fields. This is different from JSON, where a JSON file can only contain either a full JSON object or array.
-This is not so for RION. A RION file could contain a single integer RION field, or multiple fields, including an
-"Object" field if that makes sense for the given use case.
 
 
 <a name="tion"></a>
@@ -82,4 +76,11 @@ make it easier to read and write RION in a text editor. Simply convert RION to T
 You can then edit the TION data, save it, and convert it back to RION.
 
 
+<a name="rion-vs-ion"></a>
 
+# RION vs. ION
+RION was first released under the name ION, but since its release Amazon has released its own binary data format
+named ION. Therefore we have renamed Nanosai ION to RION to clearly distinguish it from Amazon ION. Actually,
+Nanosai ION and Amazon ION are similar in structure, but we believe Nanosai ION has a few advantages over Amazon ION,
+especially when working with the data in its raw form (binary form). However, going forward we will call Nanosai ION
+for RION.
