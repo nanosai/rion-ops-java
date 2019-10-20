@@ -28,6 +28,7 @@ public class RionWriter {
     public byte[] dest      = null;
     public int index = 0;
 
+    //todo should these be called "complex" or "nested" ??
     private int[] complexFieldStack = null; //used to store start indexes of complex fields that can contain nested fields.
     private int   complexFieldStackIndex = -1; //start at -1 - will be incremented before first use.
 
