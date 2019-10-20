@@ -18,6 +18,7 @@ RION Ops for Java is a toolkit for reading and writing the compact, fast, binary
 
 # RION - Raw Internet Object Notation
 RION is short for Raw Internet Object Notation. By "Raw" we mean "in its raw form - as encoded in bytes".
+RION itself will not be described here.
 Here is the [RION Documentation](http://tutorials.jenkov.com/rion/index.html)
 
 
