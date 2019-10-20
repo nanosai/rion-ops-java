@@ -1,7 +1,7 @@
 # RION Ops for Java
 
  - [Introduction](#introduction)
- - [RION](#rion)
+ - [RION vs ION](#rion-vs-ion)
  - [What We Mean by Object in RION](#what-we-mean-by-object-in-rion)
  - [TION - Textual Internet Object Notation](#tion)
 
@@ -11,12 +11,18 @@
 # Introduction
 RION Ops for Java is a toolkit for reading and writing the compact, fast, binary data format RION.
 
+
+<a name="rion-vs-ion"></a>
+
 # RION vs. ION
 RION was first released under the name ION, but since its release Amazon has released its own binary data format
 named ION. Therefore we have renamed Nanosai ION to RION to clearly distinguish it from Amazon ION. Actually,
 Nanosai ION and Amazon ION are similar in structure, but we believe Nanosai ION has a few advantages over Amazon ION,
 especially when working with the data in its raw form (binary form). However, going forward we will call Nanosai ION
 for RION.
+
+
+<a name="rion-field-types"></a>
 
 # RION Field Types
 RION contains the following field types:
