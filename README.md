@@ -1,4 +1,14 @@
-# rion-ops-java
+# RION Ops for Java
+
+ - [Introduction](#introduction)
+ - [RION](#rion)
+ - [What We Mean by Object in RION](#what-we-mean-by-object-in-rion)
+ - [TION - Textual Internet Object Notation](#tion)
+
+
+<a name="introduction"></a>
+
+# Introduction
 RION Ops for Java is a toolkit for reading and writing the compact, fast, binary data format RION.
 
 # RION vs. ION
@@ -30,8 +40,16 @@ The Array, Table and Object field types are composite field types which can cont
 Actually, this is also possible with the Bytes field type - although it is intended to contain raw bytes (e.g. a file, audio, video etc.).
 The rest of the field types are simple field types which contain a single data value.
 
+
+
+<a name="rion"></a>
+
 # RION - Raw Internet Object Notation
 RION is short for Raw Internet Object Notation. By "Raw" we mean "in its raw form - as encoded in bytes".
+
+
+
+<a name="what-we-mean-by-object-in-rion"></a>
 
 # What We Mean by "Object" in RION.
 The term "Object" in "Raw Internet Object Notation" has a slightly different meaning from what it means in JSON.
@@ -47,6 +65,9 @@ refer to in the name RION. It is totally fine for a RION file or stream to conta
 RION fields. This is different from JSON, where a JSON file can only contain either a full JSON object or array.
 This is not so for RION. A RION file could contain a single integer RION field, or multiple fields, including an
 "Object" field if that makes sense for the given use case.
+
+
+<a name="tion"></a>
 
 # TION - Textual Internet Object Notation
 We are planning to create a textual version of RION, which we will call TION - Textual Internet Object Notation.
