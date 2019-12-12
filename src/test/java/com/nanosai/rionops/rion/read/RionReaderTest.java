@@ -213,22 +213,23 @@ public class RionReaderTest {
         byte[] dest   = new byte[10 * 1024];
 
         int index = 0;
-        index += RionWriter.writeUtf8(source, index, "Hello");
+        index += RionWriter.writeUtf8(source, index, "Hellå");
         index += RionWriter.writeUtf8(source, index, (String) null);
 
         reader.setSource(source, 0, source.length);
         reader.parse();
 
         assertEquals(RionFieldTypes.UTF_8_SHORT, reader.fieldType);
-        assertEquals(5, reader.fieldLength);
+        assertEquals(6, reader.fieldLength);  //Danish character å requires 2 bytes in UTF-8
 
         int length = reader.readUtf8(dest);
-        assertEquals(5, length);
+        assertEquals(6, length);
         assertEquals('H', dest[0]);
         assertEquals('e', dest[1]);
         assertEquals('l', dest[2]);
         assertEquals('l', dest[3]);
-        assertEquals('o', dest[4]);
+        assertEquals(0xc3, 255 & dest[4]);
+        assertEquals(0xa5, 255 & dest[5]);
 
         length = reader.readUtf8(dest, 1, 3);
         assertEquals(3, length);
@@ -236,7 +237,7 @@ public class RionReaderTest {
         assertEquals('e', dest[2]);
         assertEquals('l', dest[3]);
 
-        assertEquals("Hello", reader.readUtf8String());
+        assertEquals("Hellå", reader.readUtf8String());
 
         reader.next();
         reader.parse();
@@ -402,7 +403,7 @@ public class RionReaderTest {
         index += RionWriter.writeKey(source, index, (String) null);
 
         reader.setSource(source, 0, source.length);
-        reader.parse();
+        reader.nextParse();
 
         assertEquals(RionFieldTypes.KEY, reader.fieldType);
         assertEquals(5, reader.fieldLength);
@@ -430,6 +431,25 @@ public class RionReaderTest {
         assertNull  (reader.readKeyAsUtf8String());
 
     }
+
+
+    @Test
+    public void readKeyAsUtf8String() {
+        byte[] source = new byte[10 * 1024];
+        int index = 0;
+
+        index += RionWriter.writeKey(source, index, "Hellå");
+        index += RionWriter.writeKey(source, index, (String) null);
+
+        reader.setSource(source, 0, source.length);
+        reader.nextParse();
+
+        assertEquals(RionFieldTypes.KEY, reader.fieldType);
+        assertEquals(6, reader.fieldLength);
+
+        assertEquals("Hellå", reader.readKeyAsUtf8String());
+    }
+
 
 
     @Test

@@ -4,6 +4,7 @@ package com.nanosai.rionops.rion.read;
 import com.nanosai.memops.objects.Bytes;
 import com.nanosai.rionops.rion.RionFieldTypes;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -331,7 +332,7 @@ public class RionReader {
     public String readUtf8String(){
         if(this.fieldLengthLength == 0) return null;
 
-        return new String(this.source, this.index, this.fieldLength);
+        return new String(this.source, this.index, this.fieldLength, StandardCharsets.UTF_8);
     }
 
     public Calendar readUtcCalendar() {
@@ -447,7 +448,7 @@ public class RionReader {
     public String readKeyAsUtf8String(){
         if(this.fieldLengthLength == 0) return null;
 
-        return new String(this.source, this.index, this.fieldLength);
+        return new String(this.source, this.index, this.fieldLength, StandardCharsets.UTF_8);
     }
 
     public int readKeyShort(byte[] dest){
@@ -469,7 +470,7 @@ public class RionReader {
     public String readKeyShortAsUtf8String(){
         if(this.fieldLengthLength == 0) return null;
 
-        return new String(this.source, this.index, this.fieldLength);
+        return new String(this.source, this.index, this.fieldLength, StandardCharsets.UTF_8);
     }
 
     public long readKeyShortAsLong() {

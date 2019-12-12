@@ -1,0 +1,152 @@
+Field value encodings
+
+  /.../  Hex
+  '...'  Base64
+  "..."  UTF-8
+
+  (...)  Comments
+
+  token  Single token - UTF-8 encoded - extends until next whitespace character
+
+  <...>   ??   ( ... default for field ? )
+
+
+
+Full field type encodings:
+
+  #0  Bytes
+  #1  Boolean
+  #2  Int-Pos
+  #3  Int-Neg
+  #4  Float
+  #5  UTF-8
+  #6  UTF-8 short
+  #7  UTC
+  #8  Unused
+  #9  Unused
+  #10 Array                (A)
+  #11 Table                (B)
+  #12 Object               (C)
+  #13 Key                  (D)
+  #14 Key short            (E)
+  #15 Extended             (F)
+
+
+
+
+#Abbreviated field type encodings
+  &   Bytes
+  !   Boolean
+  +   Int-Pos
+  -   Int-Neg
+  %   float 4
+  .   float 8
+  ?   UTF-8
+  $   UTF-8 short
+  @   UTC
+
+  :   Key / Key-short ?
+
+  *   extended ?
+
+  ;   ??
+  ,   ??
+
+
+#Ommited field types => default field types
+
+  /FE45 B14D/       Standalone Hex    value defaults to Bytes field
+  '5345AdoP53'      Standalone Base64 value defaults to Bytes field
+  "Hello World"     Standalone UTF-8  value defaults to UTF-8 field
+  1234545           Standalone single token UTF-8  value defaults to UTF-8
+
+
+
+Composite type delimiters
+
+  [...]   Array
+  |...|   Table
+  {...}   Object
+
+
+
+Full field type examples:
+
+  #0'ab45Rfwer2343'     Bytes field - value encoded as Base64 (inside ' ')
+  #0/ab45fe21/          Bytes field - value encoded as Hex (inside / /)
+  #1"true"              Boolean field - value encoded as UTF-8
+  #2"123"               Int-Pos field - value encoded as UTF-8
+  #2123                 Int-Pos field - value encoded as UTF-8 token
+  #3"474"               Int-Neg field - value encoded as UTf-8 (actually represents minus 474)
+  #4"123.456"           Float field - value encoded as UTF-8
+  #5"Hello World"       UTF-8 field - value encoded as UTF-8
+  #6"Hello World"       UTF-8 short field - value encoded as UTF-8
+  #7"2020-01-31"        UTC field - value enocded as UTF-8 - ISO standard
+
+  #10[ #1"true" #1"false" #1"true" ]                          Array of Boolean fields
+
+  #11| #13"fieldName1" #13"fieldName2" #13"fieldName3"        Table with 3 columns (3 key fields = 3 columns)
+       #2"123" #1"true"  #5"value 3"
+       #2"456" #1"false" #5"value 6"
+  |
+
+  #12{ #13"fieldName1" #2"123"                                Object with 3 key-value pairs
+       #13"fieldName2" #1"true"
+       #13"fieldName3" #5"value 3"
+  }
+
+
+
+Abbreviated field type examples:
+
+  &'ab45Rfwer2343'     Bytes field - value encoded as Base64 (inside ' ')
+  &/ab45fe21/          Bytes field - value encoded as Hex (inside / /)
+  !"true"              Boolean field - value encoded as UTF-8
+  +"123"               Int-Pos field - value encoded as UTF-8
+  +123                 Int-Pos field - value encoded as UTF-8 token
+  -"474"               Int-Neg field - value encoded as UTf-8 (actually represents minus 474)
+  %"123.456"           Float field - value encoded as UTF-8
+  ""Hello World"       UTF-8 field - value encoded as UTF-8
+  #6"Hello World"      UTF-8 short field - value encoded as UTF-8  (cannot be abbreviated?)
+  @"2020-01-31"        UTC field - value encoded as UTF-8 - ISO standard
+
+  [ !"true" !"false" !"true" ]                          Array of Boolean fields
+
+  | $"fieldName1" $"fieldName2" $"fieldName3"        Table with 3 columns (3 key fields = 3 columns)
+    +"123" !"true"  ""value 3"
+    +"456" !"false" ""value 6"
+  |
+
+  { $"fieldName1" +"123"                                Object with 3 key-value pairs
+    $"fieldName2" !"true"
+    $"fieldName3" ""value 3"
+  }
+
+
+
+Abbreviated field type - abbreviated value enclosure (token) examples:
+
+  &ab45Rfwer2343       Bytes field - value encoded as Base64 token
+  &/ab45fe21/          Bytes field - value encoded as Hex (inside / /)
+  !true                Boolean field - value encoded as UTF-8 token
+  +123                 Int-Pos field - value encoded as UTF-8 token
+  -474                 Int-Neg field - value encoded as UTf-8 token
+  %123.456             Float field - value encoded as UTF-8 token
+  ?Hello               UTF-8 field - value encoded as UTF-8 token
+  @2020-01-31          UTC field - value enocded as UTF-8 - ISO standard
+
+  [ !true !false !true ]                          Array of Boolean fields
+
+  | :fieldName1 :fieldName2 :fieldName3        Table with 3 columns (3 key fields = 3 columns)
+    +123        !true       ?"value 3"
+    +456        !false      ?"value 6"
+  |
+
+  { :fieldName1 +123                                Object with 3 key-value pairs
+    :fieldName2 !true
+    :fieldName3 ?tokenValue
+  }
+
+
+
+

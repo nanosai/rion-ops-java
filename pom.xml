@@ -6,7 +6,7 @@
 
     <groupId>com.nanosai</groupId>
     <artifactId>rion-ops</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
     <packaging>jar</packaging>
 
     <name>RION Ops for Java</name>

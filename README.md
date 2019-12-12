@@ -125,5 +125,6 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.5.3   | Java 8       | Bug fix of reading UTF-8 fields into Java Strings. |
 | 0.5.2   | Java 8       | First release |
 

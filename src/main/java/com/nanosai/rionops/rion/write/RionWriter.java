@@ -29,8 +29,8 @@ public class RionWriter {
     public int index = 0;
 
     //todo should these be called "complex" or "nested" ??
-    private int[] complexFieldStack = null; //used to store start indexes of complex fields that can contain nested fields.
-    private int   complexFieldStackIndex = -1; //start at -1 - will be incremented before first use.
+    private int[] compositeFieldStack = null; //used to store start indexes of complex fields that can contain nested fields.
+    private int   compositeFieldStackIndex = -1; //start at -1 - will be incremented before first use.
 
     public RionWriter() {
     }
@@ -62,7 +62,7 @@ public class RionWriter {
     }
 
     public RionWriter setNestedFieldStack(int[] stack){
-        this.complexFieldStack = stack;
+        this.compositeFieldStack = stack;
         return this;
     }
 
@@ -351,12 +351,12 @@ public class RionWriter {
     }
 
     public void writeObjectBeginPush(int lengthLength){
-        this.complexFieldStack[++this.complexFieldStackIndex] = this.index;
+        this.compositeFieldStack[++this.compositeFieldStackIndex] = this.index;
         this.dest[this.index++] = (byte) (255 & ((RionFieldTypes.OBJECT << 4) | lengthLength));
         this.index += lengthLength;
     }
     public void writeObjectEndPop(){
-        int objectStartIndex = this.complexFieldStack[this.complexFieldStackIndex--];
+        int objectStartIndex = this.compositeFieldStack[this.compositeFieldStackIndex--];
         int lengthLength = 15 & (this.dest[objectStartIndex]);
         int length = this.index - objectStartIndex - 1 - lengthLength;
 
@@ -387,6 +387,23 @@ public class RionWriter {
             dest[this.index++] = (byte) (255 & (elementCount >> i));
         }
     }
+
+    // new ...
+    public void writeTableBeginPush(int lengthLength, int elementCount){
+        this.compositeFieldStack[++this.compositeFieldStackIndex] = this.index;
+
+        this.dest[this.index++] = (byte) (255 & ((RionFieldTypes.TABLE << 4) | lengthLength));
+        this.index += lengthLength;
+
+        int elementCountLengthLength = lengthOfInt64Value(elementCount);
+        dest[this.index++] = (byte) (255 & ((RionFieldTypes.INT_POS << 4) | elementCountLengthLength));
+        for(int i=(elementCountLengthLength-1)*8; i >= 0; i-=8){
+            dest[this.index++] = (byte) (255 & (elementCount >> i));
+        }
+    }
+
+
+
 
     public void writeTableEnd(int objectStartIndex, int lengthLength, int length){
         objectStartIndex++;  //jump over the lead byte of the ION Object field
