@@ -17,7 +17,7 @@ public class RionUtil {
     public static final long TWO_POW_48 = TWO_POW_8 * TWO_POW_40;
     public static final long TWO_POW_56 = TWO_POW_8 * TWO_POW_48;
 
-    public static int lengthOfInt64Value(long value){
+    public static int byteLengthOfInt64Value(long value){
         if(value < TWO_POW_8)  return 1;
         if(value < TWO_POW_16) return 2;
         if(value < TWO_POW_24) return 3;
@@ -289,7 +289,7 @@ public class RionUtil {
                 System.arraycopy(fieldName, 0, keyField, 1, fieldName.length);
             } else {
                 int length = fieldName.length;
-                int lengthLength = IonUtil.lengthOfInt64Value(length);
+                int lengthLength = IonUtil.byteLengthOfInt64Value(length);
                 keyField = new byte[1 + lengthLength + fieldName.length];
 
                 keyField[0] = (byte) (255 & ((IonFieldTypes.KEY << 4) | lengthLength));
