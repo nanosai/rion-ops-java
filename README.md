@@ -47,7 +47,7 @@ even though they logically represent a composite object (key + value). A set of 
 separate, small objects even though they logically represent one big object with properties with each property consisting
 of a key + value pair.
 
-As you can see in the RION field list above, RION has a special type of field called an "Object" which can contain
+As you can see in the RION field list below, RION has a special type of field called an "Object" which can contain
 nested RION fields. The "Object" field type is a commonly used RION field type, but it is not this field type we
 refer to in the name RION. It is totally fine for a RION file or stream to contain multiple, separate non-"Object"
 RION fields. This is different from JSON, where a JSON file can only contain either a full JSON object or array.
@@ -125,6 +125,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
-| 0.5.3   | Java 8       | Bug fix of reading UTF-8 fields into Java Strings (issue #3) |
-| 0.5.2   | Java 8       | First release |
+| 0.6.0   | Java 8+      | RionToHexConverter added. Minor enhancements to RionWriter for writing Array and Table fields. |
+| 0.5.3   | Java 8+      | Bug fix of reading UTF-8 fields into Java Strings (issue #3) |
+| 0.5.2   | Java 8+      | First release |
 
