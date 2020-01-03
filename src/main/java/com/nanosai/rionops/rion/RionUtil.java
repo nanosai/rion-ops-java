@@ -29,13 +29,13 @@ public class RionUtil {
     }
 
     /*
-    public static Map<IonKeyFieldKey, IIonFieldReader> createFieldReaders(
+    public static Map<RionKeyFieldKey, IRionFieldReader> createFieldReaders(
             Field[] fields,
-            IIonObjectReaderConfigurator configurator,
-            Map<Field, IIonFieldReader> existingFieldReaders) {
+            IRionObjectReaderConfigurator configurator,
+            Map<Field, IRionFieldReader> existingFieldReaders) {
 
-        IonFieldReaderConfiguration          fieldConfiguration = new IonFieldReaderConfiguration();
-        Map<IonKeyFieldKey, IIonFieldReader> fieldReaderMap     = new HashMap<>();
+        RionFieldReaderConfiguration          fieldConfiguration = new RionFieldReaderConfiguration();
+        Map<RionKeyFieldKey, IRionFieldReader> fieldReaderMap     = new HashMap<>();
 
         for(int i=0; i < fields.length; i++){
 
@@ -47,9 +47,9 @@ public class RionUtil {
             configurator.configure(fieldConfiguration);
 
             if(existingFieldReaders.containsKey(fields[i])){
-                IIonFieldReader fieldReader = existingFieldReaders.get(fields[i]);
+                IRionFieldReader fieldReader = existingFieldReaders.get(fields[i]);
                 try {
-                    fieldReaderMap.put(new IonKeyFieldKey(fieldConfiguration.alias.getBytes("UTF-8")), fieldReader); //todo this is wrong - should be IonKeyFieldKey - except those are not unique to classes...
+                    fieldReaderMap.put(new RionKeyFieldKey(fieldConfiguration.alias.getBytes("UTF-8")), fieldReader); //todo this is wrong - should be RionKeyFieldKey - except those are not unique to classes...
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     //todo better exception handling, although UTF-8 is a known encoding.
@@ -59,18 +59,18 @@ public class RionUtil {
 
 
             if (fieldConfiguration.include) {
-                IIonFieldReader fieldReader = IonUtil.createFieldReader(fields[i], configurator);
+                IRionFieldReader fieldReader = IonUtil.createFieldReader(fields[i], configurator);
 
                 existingFieldReaders.put(fields[i], fieldReader);
 
-                if(fieldReader instanceof IonFieldReaderObject){
-                    ((IonFieldReaderObject) fieldReader).generateFieldReaders(configurator, existingFieldReaders);
-                } else if(fieldReader instanceof IonFieldReaderTable){
-                    ((IonFieldReaderTable) fieldReader).generateFieldReaders(configurator, existingFieldReaders);
+                if(fieldReader instanceof RionFieldReaderObject){
+                    ((RionFieldReaderObject) fieldReader).generateFieldReaders(configurator, existingFieldReaders);
+                } else if(fieldReader instanceof RionFieldReaderTable){
+                    ((RionFieldReaderTable) fieldReader).generateFieldReaders(configurator, existingFieldReaders);
                 }
 
                 try {
-                    fieldReaderMap.put(new IonKeyFieldKey(fieldConfiguration.alias.getBytes("UTF-8")), fieldReader);
+                    fieldReaderMap.put(new RionKeyFieldKey(fieldConfiguration.alias.getBytes("UTF-8")), fieldReader);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     //todo throw exception - but will never happen since UTF-8 is a known encoding.
@@ -81,16 +81,16 @@ public class RionUtil {
     }
 
 
-    public static IIonFieldWriter[] createFieldWriters(
-            Field[] fields, IIonObjectWriterConfigurator configurator,
-            Map<Field, IIonFieldWriter> existingFieldWriters) {
-        List<IIonFieldWriter> fieldWritersTemp = new ArrayList<>();
+    public static IRionFieldWriter[] createFieldWriters(
+            Field[] fields, IRionObjectWriterConfigurator configurator,
+            Map<Field, IRionFieldWriter> existingFieldWriters) {
+        List<IRionFieldWriter> fieldWritersTemp = new ArrayList<>();
 
-        IonFieldWriterConfiguration fieldConfiguration = new IonFieldWriterConfiguration();
+        RionFieldWriterConfiguration fieldConfiguration = new RionFieldWriterConfiguration();
 
         for(int i=0; i < fields.length; i++){
             if(existingFieldWriters.containsKey(fields[i])){
-                IIonFieldWriter fieldWriter = existingFieldWriters.get(fields[i]);
+                IRionFieldWriter fieldWriter = existingFieldWriters.get(fields[i]);
                 fieldWritersTemp.add(fieldWriter);
                 continue;
             }
@@ -103,21 +103,21 @@ public class RionUtil {
             configurator.configure(fieldConfiguration);
 
             if(fieldConfiguration.include){
-                IIonFieldWriter fieldWriter =
+                IRionFieldWriter fieldWriter =
                         IonUtil.createFieldWriter(fields[i], fieldConfiguration.alias, configurator, existingFieldWriters);
 
                 existingFieldWriters.put(fields[i], fieldWriter);
 
-                if(fieldWriter instanceof IonFieldWriterObject){
-                    ((IonFieldWriterObject) fieldWriter).generateFieldWriters(configurator, existingFieldWriters);
-                } else if(fieldWriter instanceof IonFieldWriterTable){
-                    ((IonFieldWriterTable) fieldWriter).generateFieldWriters(configurator, existingFieldWriters);
+                if(fieldWriter instanceof RionFieldWriterObject){
+                    ((RionFieldWriterObject) fieldWriter).generateFieldWriters(configurator, existingFieldWriters);
+                } else if(fieldWriter instanceof RionFieldWriterTable){
+                    ((RionFieldWriterTable) fieldWriter).generateFieldWriters(configurator, existingFieldWriters);
                 }
                 fieldWritersTemp.add(fieldWriter);
             }
         }
 
-        IIonFieldWriter[] fieldWriters = new IIonFieldWriter[fieldWritersTemp.size()];
+        IRionFieldWriter[] fieldWriters = new IRionFieldWriter[fieldWritersTemp.size()];
 
         for(int i=0, n=fieldWritersTemp.size(); i < n; i++){
             fieldWriters[i] = fieldWritersTemp.get(i);
@@ -126,63 +126,63 @@ public class RionUtil {
         return fieldWriters;
     }
 
-    public static IIonFieldWriter createFieldWriter(Field field, String alias, IIonObjectWriterConfigurator configurator, Map<Field, IIonFieldWriter> existingFieldWriters){
+    public static IRionFieldWriter createFieldWriter(Field field, String alias, IRionObjectWriterConfigurator configurator, Map<Field, IRionFieldWriter> existingFieldWriters){
         field.setAccessible(true); //allows access to private fields, and supposedly speeds up reflection...  ?
         Class fieldType = field.getType();
 
         if(boolean.class.equals(fieldType)){
-            return new IonFieldWriterBoolean(field, alias);
+            return new RionFieldWriterBoolean(field, alias);
         }
         if(byte.class.equals(fieldType)){
-            return new IonFieldWriterByte(field, alias);
+            return new RionFieldWriterByte(field, alias);
         }
         if(short.class.equals(fieldType)){
-            return new IonFieldWriterShort(field, alias);
+            return new RionFieldWriterShort(field, alias);
         }
         if(int.class.equals(fieldType)){
-            return new IonFieldWriterInt(field, alias);
+            return new RionFieldWriterInt(field, alias);
         }
         if(long.class.equals(fieldType)){
-            return new IonFieldWriterLong(field, alias);
+            return new RionFieldWriterLong(field, alias);
         }
         if(float.class.equals(fieldType)){
-            return new IonFieldWriterFloat(field, alias);
+            return new RionFieldWriterFloat(field, alias);
         }
         if(double.class.equals(fieldType)){
-            return new IonFieldWriterDouble(field, alias);
+            return new RionFieldWriterDouble(field, alias);
         }
         if(String.class.equals(fieldType)){
-            return new IonFieldWriterString(field, alias);
+            return new RionFieldWriterString(field, alias);
         }
         if(Calendar.class.equals(fieldType)){
-            return new IonFieldWriterCalendar(field, alias);
+            return new RionFieldWriterCalendar(field, alias);
         }
         if(GregorianCalendar.class.equals(fieldType)){
-            return new IonFieldWriterCalendar(field, alias);
+            return new RionFieldWriterCalendar(field, alias);
         }
         if(fieldType.isArray()){
             if(byte.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayByte(field, alias);
+                return new RionFieldWriterArrayByte(field, alias);
             }
             if(short.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayShort(field, alias);
+                return new RionFieldWriterArrayShort(field, alias);
             }
             if(int.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayInt(field, alias);
+                return new RionFieldWriterArrayInt(field, alias);
             }
             if(long.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayLong(field, alias);
+                return new RionFieldWriterArrayLong(field, alias);
             }
             if(float.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayFloat(field, alias);
+                return new RionFieldWriterArrayFloat(field, alias);
             }
             if(double.class.equals(fieldType.getComponentType())){
-                return new IonFieldWriterArrayDouble(field, alias);
+                return new RionFieldWriterArrayDouble(field, alias);
             }
-            return new IonFieldWriterTable(field, alias);
+            return new RionFieldWriterTable(field, alias);
         }
 
-        return new IonFieldWriterObject(field, alias);
+        return new RionFieldWriterObject(field, alias);
     }
 
      */
@@ -190,69 +190,69 @@ public class RionUtil {
 
     //todo remove this ?
     /*
-    public static IIonFieldReader createFieldReader(Field field){
+    public static IRionFieldReader createFieldReader(Field field){
         return createFieldReader(field, null);
     }
     */
 
     /*
-    public static IIonFieldReader createFieldReader(Field field, IIonObjectReaderConfigurator configurator){
+    public static IRionFieldReader createFieldReader(Field field, IRionObjectReaderConfigurator configurator){
 
         field.setAccessible(true); //allows access to private fields, and supposedly speeds up reflection...  ?
         Class fieldType = field.getType();
 
         if(boolean.class.equals(fieldType)){
-            return new IonFieldReaderBoolean(field);
+            return new RionFieldReaderBoolean(field);
         }
         if(byte.class.equals(fieldType)){
-            return new IonFieldReaderByte(field);
+            return new RionFieldReaderByte(field);
         }
         if(short.class.equals(fieldType)){
-            return new IonFieldReaderShort(field);
+            return new RionFieldReaderShort(field);
         }
         if(int.class.equals(fieldType)){
-            return new IonFieldReaderInt(field);
+            return new RionFieldReaderInt(field);
         }
         if(long.class.equals(fieldType)){
-            return new IonFieldReaderLong(field);
+            return new RionFieldReaderLong(field);
         }
         if(float.class.equals(fieldType)){
-            return new IonFieldReaderFloat(field);
+            return new RionFieldReaderFloat(field);
         }
         if(double.class.equals(fieldType)){
-            return new IonFieldReaderDouble(field);
+            return new RionFieldReaderDouble(field);
         }
         if(String.class.equals(fieldType)){
-            return new IonFieldReaderString(field);
+            return new RionFieldReaderString(field);
         }
         if(Calendar.class.equals(fieldType)){
-            return new IonFieldReaderCalendar(field);
+            return new RionFieldReaderCalendar(field);
         }
         if(GregorianCalendar.class.equals(fieldType)){
-            return new IonFieldReaderCalendar(field);
+            return new RionFieldReaderCalendar(field);
         }
         if(fieldType.isArray()){
             if(byte.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayByte(field);
+                return new RionFieldReaderArrayByte(field);
             }
             if(short.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayShort(field);
+                return new RionFieldReaderArrayShort(field);
             }
             if(int.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayInt(field);
+                return new RionFieldReaderArrayInt(field);
             }
             if(long.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayLong(field);
+                return new RionFieldReaderArrayLong(field);
             }
             if(float.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayFloat(field);
+                return new RionFieldReaderArrayFloat(field);
             }
             if(double.class.equals(fieldType.getComponentType())){
-                return new IonFieldReaderArrayDouble(field);
+                return new RionFieldReaderArrayDouble(field);
             }
-            return new IonFieldReaderTable(field, configurator);
+            return new RionFieldReaderTable(field, configurator);
         } else {
-            return new IonFieldReaderObject(field, configurator);
+            return new RionFieldReaderObject(field, configurator);
         }
 
         //todo support object field writer

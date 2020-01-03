@@ -96,15 +96,17 @@ You can then edit the TION data, save it, and convert it back to RION.
 
 # RION vs. ION
 RION was first released under the name ION, but since its release Amazon has released its own binary data format
-named ION. Therefore we have renamed Nanosai ION to RION to clearly distinguish it from Amazon ION. Actually,
-Nanosai ION and Amazon ION are similar in structure, but we believe Nanosai ION has a few advantages over Amazon ION,
-especially when working with the data in its raw form (binary form). However, going forward we will call Nanosai ION
-for RION.
+named ION. To avoid confusiong we are currently using the term "Raw Internet Object Notation" (RION)
+to clearly distinguish it from Amazon ION. Actually, Nanosai ION and Amazon ION are similar in structure,
+but we believe Nanosai ION has a few advantages over Amazon ION, especially when working with the data in its raw form
+(binary form).
+
+Note: RION is our current "working title", but we may change the name in the future. However, the most important is not
+the name of the format, but it's capabilities!
 
 
 
 <a name="maven-dependency"></a>
-
 # Maven Dependency
 
 If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks like this:
@@ -112,7 +114,7 @@ If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks 
     <dependency>
         <groupId>com.nanosai</groupId>
         <artifactId>rion-ops</artifactId>
-        <version>0.5.3</version>
+        <version>0.7.0</version>
     </dependency>
 
 Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
@@ -125,6 +127,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.7.0   | Java 8+      | RionObjectWriter and RionObjectReader + support classes added. |
 | 0.6.0   | Java 8+      | RionToHexConverter added. Minor enhancements to RionWriter for writing Array and Table fields. |
 | 0.5.3   | Java 8+      | Bug fix of reading UTF-8 fields into Java Strings (issue #3) |
 | 0.5.2   | Java 8+      | First release |
