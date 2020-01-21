@@ -68,7 +68,7 @@ RION contains the following field types:
  - UTF-8
  - UTF-8 Short
  - UTC date time
- - Array
+ - Array (*)
  - Table
  - Object
  - Key
@@ -79,8 +79,8 @@ The Array, Table and Object field types are composite field types which can cont
 Actually, this is also possible with the Bytes field type - although it is intended to contain raw bytes (e.g. a file, audio, video etc.).
 The rest of the field types are simple field types which contain a single data value.
 
-
-
+Since you can model an Array as a single column Table we are currently considering whether the Array field is really
+necessary, or if it superfluous.
 
 
 <a name="tion"></a>
@@ -114,7 +114,7 @@ If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks 
     <dependency>
         <groupId>com.nanosai</groupId>
         <artifactId>rion-ops</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </dependency>
 
 Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
@@ -127,6 +127,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.8.0   | Java 8+      | RionObjectWriterBuilder and RionObjectReaderBuilder classes added. |
 | 0.7.0   | Java 8+      | RionObjectWriter and RionObjectReader + support classes added. |
 | 0.6.0   | Java 8+      | RionToHexConverter added. Minor enhancements to RionWriter for writing Array and Table fields. |
 | 0.5.3   | Java 8+      | Bug fix of reading UTF-8 fields into Java Strings (issue #3) |

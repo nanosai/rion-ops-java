@@ -19,7 +19,7 @@ public class RionFieldWriterObject extends RionFieldWriterBase implements IRionF
         super(field, alias);
     }
 
-    public void generateFieldWriters(IRionObjectWriterConfigurator configurator, Map<Field, IRionFieldWriter> existingFieldWriters) {
+    public void generateFieldWriters(IRionObjectWriterConfigurator configurator, Map<Object, IRionFieldWriter> existingFieldWriters) {
         //generate field writers for this RionFieldWriterObject instance - fields in the class of this field.
         this.fieldWriters = RionFieldWriterUtil.createFieldWriters(field.getType().getDeclaredFields(), configurator, existingFieldWriters);
     }
