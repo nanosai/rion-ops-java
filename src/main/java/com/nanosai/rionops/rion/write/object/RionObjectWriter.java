@@ -11,10 +11,15 @@ import java.util.HashMap;
  * per class.
  *
  */
-public class RionObjectWriter {
+public class RionObjectWriter<T> {
 
-    public Class   typeClass = null;
-    public IRionFieldWriter[] fieldWriters = null;
+    protected Class   typeClass = null;
+    protected IRionFieldWriter[] fieldWriters = null;
+
+
+    public RionObjectWriter(IRionFieldWriter[] fieldWriters){
+        this.fieldWriters = fieldWriters;
+    }
 
     /**
      * Creates an RionObjectWriter targeted at the class passed as parameter to this constructor.

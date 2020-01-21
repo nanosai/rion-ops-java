@@ -25,6 +25,12 @@ public class RionObjectReader<T> {
     private RionKeyFieldKey currentKeyFieldKey = new RionKeyFieldKey();
 
 
+    public RionObjectReader(Class typeClass, Map<RionKeyFieldKey, IRionFieldReader> fieldReaderMap) {
+        this.typeClass = typeClass;
+        this.fieldReaderMap = fieldReaderMap;
+    }
+
+
     /**
      * Creates an RionObjectReader targeted at the given class.
      * @param typeClass The class this RionObjectReader instance should be able to read instances of, from ION data.

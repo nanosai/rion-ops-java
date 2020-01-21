@@ -45,7 +45,7 @@ public class RionFieldWriterUtil {
 
     public static IRionFieldWriter[] createFieldWriters(
             Field[] fields, IRionObjectWriterConfigurator configurator,
-            Map<Field, IRionFieldWriter> existingFieldWriters) {
+            Map<Object, IRionFieldWriter> existingFieldWriters) {
         List<IRionFieldWriter> fieldWritersTemp = new ArrayList<>();
 
         RionFieldWriterConfiguration fieldConfiguration = new RionFieldWriterConfiguration();
@@ -88,7 +88,7 @@ public class RionFieldWriterUtil {
         return fieldWriters;
     }
 
-    public static IRionFieldWriter createFieldWriter(Field field, String alias, IRionObjectWriterConfigurator configurator, Map<Field, IRionFieldWriter> existingFieldWriters){
+    public static IRionFieldWriter createFieldWriter(Field field, String alias, IRionObjectWriterConfigurator configurator, Map<Object, IRionFieldWriter> existingFieldWriters){
         field.setAccessible(true); //allows access to private fields, and supposedly speeds up reflection...  ?
         Class fieldType = field.getType();
 
