@@ -16,6 +16,175 @@ public class RionReaderTest {
 
     RionReader reader = new RionReader();
 
+
+    @Test
+    public void testWriteReadNullFields() {
+        byte[] source = new byte[10 * 1024];
+
+        RionWriter writer = new RionWriter();
+        writer.setDestination(source, 0);
+
+        writer.writeBytesNull();
+        writer.writeBytes(null);
+        writer.writeBytes( new byte[]{} );
+        writer.writeBytes( new byte[]{1,2,3} );
+
+        writer.writeBooleanNull();
+        writer.writeBooleanObj(null);
+        writer.writeBooleanObj(new Boolean(true));
+        writer.writeBoolean(true);
+
+        writer.writeInt64Null();
+        writer.writeInt64Obj(null);
+        writer.writeInt64Obj(new Long(123));
+        writer.writeInt64(123);
+
+        writer.writeFloatNull();
+        writer.writeFloat32Obj (null);
+        writer.writeFloat64Obj (null);
+        writer.writeFloat32Obj (new Float(123.45));
+        writer.writeFloat64Obj (new Double(123.45));
+
+        writer.writeUtf8Null();
+        writer.writeUtf8 ((String) null);
+        writer.writeUtf8 ("" );
+        writer.writeUtf8 ("123" );
+
+        writer.writeUtcNull();
+        writer.writeUtc (null, 9);
+        writer.writeUtc (new GregorianCalendar(), 9 );
+
+        writer.writeArrayNull ();
+        writer.writeTableNull ();
+        writer.writeObjectNull ();
+
+        RionReader reader = new RionReader(source, 0, writer.index);
+
+        //Bytes fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BYTES, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BYTES, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BYTES, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BYTES, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        //Boolean fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        //Int fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.INT_POS, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.INT_POS, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.INT_POS, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.INT_POS, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        //Float fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.FLOAT, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.FLOAT, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.FLOAT, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.FLOAT, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.FLOAT, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        //UTF-8 fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertFalse(reader.isNull());
+        assertEquals("", reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8_SHORT, reader.fieldType);
+        assertFalse(reader.isNull());
+        assertEquals("123", reader.readUtf8String());
+
+        //UTC fields
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTC_DATE_TIME, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTC_DATE_TIME, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTC_DATE_TIME, reader.fieldType);
+        assertFalse(reader.isNull());
+
+        //Array field
+        reader.nextParse();
+        assertEquals(RionFieldTypes.ARRAY, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        //Table field
+        reader.nextParse();
+        assertEquals(RionFieldTypes.TABLE, reader.fieldType);
+        assertTrue(reader.isNull());
+
+        //Table field
+        reader.nextParse();
+        assertEquals(RionFieldTypes.OBJECT, reader.fieldType);
+        assertTrue(reader.isNull());
+
+    }
+
+
+
     @Test
     public void testSetSource_byteArray() {
         byte[] source = new byte[10 * 1024];

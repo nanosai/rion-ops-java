@@ -189,6 +189,10 @@ public class RionReader {
         parse(); //
     }
 
+    public boolean isNull(){
+        return this.fieldLengthLength == 0;
+    }
+
 
     public int readBytes(byte[] dest){
         if(this.fieldLengthLength == 0) return 0;
