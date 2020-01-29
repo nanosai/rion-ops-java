@@ -104,6 +104,10 @@ public class RionWriter {
         this.index += sourceLength;
     }
 
+    public void writeBytesNull(){
+        this.dest[this.index++] = (byte) (0xFF & (RionFieldTypes.BYTES << 4)); //lengthLength = 0 means null value
+    }
+
     public void writeBoolean(boolean value){
         if(value){
             this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.BOOLEAN << 4) | 1));
@@ -122,6 +126,10 @@ public class RionWriter {
         } else {
             this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.BOOLEAN << 4) | 2));
         }
+    }
+
+    public void writeBooleanNull() {
+        this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.BOOLEAN << 4) | 0));
     }
 
     public void writeInt64(long value){
@@ -161,6 +169,10 @@ public class RionWriter {
         }
     }
 
+    public void writeInt64Null() {
+        dest[index++] = (byte) (0xFF & (RionFieldTypes.INT_POS << 4));
+    }
+
     public void writeFloat32(float value){
         int intBits = Float.floatToIntBits(value);
 
@@ -184,7 +196,6 @@ public class RionWriter {
         for(int i=(4-1)*8; i >= 0; i-=8){
             this.dest[this.index++] = (byte) (0xFF & (intBits >> i));
         }
-
     }
 
     public void writeFloat64(double value){
@@ -212,6 +223,10 @@ public class RionWriter {
         }
     }
 
+    public void writeFloatNull(){
+        this.dest[this.index++] = (byte) (0xFF & (RionFieldTypes.FLOAT << 4));
+    }
+
     public void writeUtf8(String value){
         if(value == null){
             this.dest[this.index++] = (byte) (0xFF & (RionFieldTypes.UTF_8 << 4));
@@ -229,7 +244,7 @@ public class RionWriter {
 
         int length         = utf8Bytes.length;
 
-        if(length <=15){
+        if(length > 0 &&  length <=15){
             this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | length));
             System.arraycopy(utf8Bytes, 0, this.dest, this.index, length);
             this.index += length;
@@ -244,7 +259,6 @@ public class RionWriter {
             System.arraycopy(utf8Bytes, 0, this.dest, this.index, length);
             this.index += length;
         }
-
     }
 
     public void writeUtf8(byte[] value){
@@ -294,7 +308,10 @@ public class RionWriter {
             System.arraycopy(source, sourceOffset, this.dest, this.index, sourceLength);
             this.index += sourceLength;
         }
+    }
 
+    public void writeUtf8Null() {
+        this.dest[this.index++] = (byte) (0xFF & (RionFieldTypes.UTF_8 << 4));
     }
 
     public void writeUtc(Calendar dateTime, int length){
@@ -335,8 +352,16 @@ public class RionWriter {
         dest[this.index++] = (byte) (0xFF & (millis));
 
         return;
-
     }
+
+    public void writeUtcNull(){
+        dest[this.index++] = (byte) (0xFF & (RionFieldTypes.UTC_DATE_TIME << 4));
+    }
+
+    public void writeObjectNull() {
+        dest[this.index++] = (byte) (0xFF & (RionFieldTypes.OBJECT << 4));
+    }
+
 
     public void writeObjectBegin(int lengthLength){
         this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.OBJECT << 4) | lengthLength));
@@ -367,6 +392,12 @@ public class RionWriter {
             dest[objectStartIndex++] = (byte) (0xFF & (length >> i));
         }
     }
+
+    public void writeTableNull() {
+        dest[this.index++] = (byte) (0xFF & (RionFieldTypes.TABLE << 4));
+    }
+
+
 
     public void writeTableBegin(int lengthLength){
         this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.TABLE << 4) | lengthLength));
@@ -427,6 +458,10 @@ public class RionWriter {
         for(int i=(lengthLength-1)*8; i >= 0; i-=8){
             dest[objectStartIndex++] = (byte) (0xFF & (elementCount >> i));
         }
+    }
+
+    public void writeArrayNull() {
+        dest[this.index++] = (byte) (0xFF & (RionFieldTypes.ARRAY << 4));
     }
 
     public void writeArrayBegin(int lengthLength){
@@ -540,6 +575,9 @@ public class RionWriter {
         }
     }
 
+    public void writeKeyNull() {
+        this.dest[this.index++] = (byte) (0xFF & (RionFieldTypes.KEY << 4));
+    }
 
     public void writeKey(String value){
         if(value == null){
@@ -735,6 +773,8 @@ public class RionWriter {
     /*
     Extended field types
     */
+
+    @Deprecated
     public void writeElementCount(long elementCount){
         int lengthLength = byteLengthOfInt64Value(elementCount);
         this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));

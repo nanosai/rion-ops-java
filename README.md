@@ -127,6 +127,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.9.0   | Java 8+      | Improved support for writing null fields in RionWriter. Bug fix of RionWriter.writeUtf8() which serialized empty string as UTF-8-Short null - not UTF-8 with length 0. |
 | 0.8.0   | Java 8+      | RionObjectWriterBuilder and RionObjectReaderBuilder classes added. |
 | 0.7.0   | Java 8+      | RionObjectWriter and RionObjectReader + support classes added. |
 | 0.6.0   | Java 8+      | RionToHexConverter added. Minor enhancements to RionWriter for writing Array and Table fields. |
