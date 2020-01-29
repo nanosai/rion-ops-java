@@ -114,7 +114,7 @@ If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks 
     <dependency>
         <groupId>com.nanosai</groupId>
         <artifactId>rion-ops</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
     </dependency>
 
 Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
