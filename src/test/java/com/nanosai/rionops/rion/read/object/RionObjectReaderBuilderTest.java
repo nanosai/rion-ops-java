@@ -30,16 +30,17 @@ public class RionObjectReaderBuilderTest {
         writerBuilder.addDeclaredFields(TestPojo.class);
         RionObjectWriter writer = writerBuilder.build();
 
-        RionObjectReaderBuilder readerBuilder = new RionObjectReaderBuilder();
-        readerBuilder.setTypeClass(TestPojo.class);
-        readerBuilder.addDeclaredFieldsForTypeClass();
-        RionObjectReader reader = readerBuilder.build();
-
         byte[] data = new byte[1024];
         TestPojo pojo = new TestPojo();
         pojo.field4 = "Hello world";
 
         int bytesWritten = writer.writeObject(pojo, 2, data, 0);
+
+
+        RionObjectReaderBuilder readerBuilder = new RionObjectReaderBuilder();
+        readerBuilder.setTypeClass(TestPojo.class);
+        readerBuilder.addDeclaredFieldsForTypeClass();
+        RionObjectReader reader = readerBuilder.build();
 
         TestPojo pojoRead = (TestPojo) reader.read(data, 0);
 
