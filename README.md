@@ -114,7 +114,7 @@ If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks 
     <dependency>
         <groupId>com.nanosai</groupId>
         <artifactId>rion-ops</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
     </dependency>
 
 Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
@@ -127,6 +127,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.9.1   | Java 8+      | More null support, related bug fixes, improved tests and code cleanup (issue #14). |
 | 0.9.0   | Java 8+      | Improved support for writing null fields in RionWriter. Bug fix of RionWriter.writeUtf8() which serialized empty string as UTF-8-Short null - not UTF-8 with length 0 (issue #14). |
 | 0.8.0   | Java 8+      | RionObjectWriterBuilder and RionObjectReaderBuilder classes added. |
 | 0.7.0   | Java 8+      | RionObjectWriter and RionObjectReader + support classes added. |
