@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
  * Created by jjenkov on 05-11-2015.
  */
-public class IonObjectReaderTest {
+public class RionObjectReaderTest {
 
 
     @Test
@@ -33,7 +32,7 @@ public class IonObjectReaderTest {
         sourcePojo.field4 = "abc";
         sourcePojo.field5 = "987654321098765";
 
-        Calendar calendar = sourcePojo.field6;
+        Calendar calendar = sourcePojo.field8;
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.set(Calendar.YEAR , 2014);
         calendar.set(Calendar.MONTH, 11);
@@ -56,7 +55,9 @@ public class IonObjectReaderTest {
         assertEquals(456.456F, destPojo.field2, 0);
         assertEquals("abc", destPojo.field4);
         assertEquals("987654321098765", destPojo.field5);
-        assertEquals(calendar, destPojo.field6);
+        assertEquals("", destPojo.field6);
+        assertEquals(null, destPojo.field7);
+        assertEquals(calendar, destPojo.field8);
     }
 
 
@@ -75,7 +76,7 @@ public class IonObjectReaderTest {
         sourcePojo.field4 = "abc";
         sourcePojo.field5 = "987654321098765";
 
-        Calendar calendar = sourcePojo.field6;
+        Calendar calendar = sourcePojo.field8;
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.set(Calendar.YEAR , 2014);
         calendar.set(Calendar.MONTH, 11);
@@ -99,7 +100,9 @@ public class IonObjectReaderTest {
         assertEquals(456.456F, destPojo.field2, 0);
         assertEquals("abc", destPojo.field4);
         assertEquals("987654321098765", destPojo.field5);
-        assertEquals(calendar, destPojo.field6);
+        assertEquals("", destPojo.field6);
+        assertNull(destPojo.field7);
+        assertEquals(calendar, destPojo.field8);
     }
 
 

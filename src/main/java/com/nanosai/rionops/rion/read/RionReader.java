@@ -340,8 +340,9 @@ public class RionReader {
     }
 
     public Calendar readUtcCalendar() {
-        //todo can be optimized ?
+        if(this.fieldLengthLength == 0) return null;
 
+        //todo can be optimized ?
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTimeZone(UTC_TIME_ZONE);
         calendar.set(Calendar.MONTH, 0);

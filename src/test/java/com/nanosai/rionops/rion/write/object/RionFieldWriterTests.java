@@ -3,7 +3,7 @@ package com.nanosai.rionops.rion.write.object;
 /**
  * Created by jjenkov on 04-11-2015.
  */
-public class IonFieldWriterTests {
+public class RionFieldWriterTests {
 
     /*
 

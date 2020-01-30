@@ -18,7 +18,7 @@ public class RionObjectReaderBuilderTest {
         builder.setTypeClass(TestPojo.class);
         builder.addDeclaredFieldsForTypeClass();
 
-        assertEquals(7, builder.fieldReaderMap.size());
+        assertEquals(9, builder.fieldReaderMap.size());
 
         RionObjectReader reader = builder.build();
     }
