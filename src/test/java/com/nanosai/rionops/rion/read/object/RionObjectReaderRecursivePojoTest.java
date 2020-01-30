@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by jjenkov on 25/03/2017.
  */
-public class IonObjectReaderRecursivePojoTest {
+public class RionObjectReaderRecursivePojoTest {
 
     @Test
     public void testRecursiveObjectReading() {

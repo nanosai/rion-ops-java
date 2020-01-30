@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 /**
  * Created by jjenkov on 18/03/2017.
  */
-public class IonObjectWriterRecursivePojoTests {
+public class RionObjectWriterRecursivePojoTests {
 
 
     @Test

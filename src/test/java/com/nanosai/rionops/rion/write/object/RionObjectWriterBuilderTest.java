@@ -14,12 +14,12 @@ public class RionObjectWriterBuilderTest {
         RionObjectWriterBuilder builder = new RionObjectWriterBuilder();
         builder.addFields(TestPojo.class);
 
-        assertEquals(7, builder.fieldWriters.size());
+        assertEquals(9, builder.fieldWriters.size());
 
         RionObjectWriter writer = builder.build();
 
         assertNotNull(writer.fieldWriters);
-        assertEquals(7, writer.fieldWriters.length);
+        assertEquals(9, writer.fieldWriters.length);
 
         assertEquals(RionFieldWriterBoolean.class  , writer.fieldWriters[0].getClass());
         assertEquals(RionFieldWriterLong.class     , writer.fieldWriters[1].getClass());
@@ -27,7 +27,9 @@ public class RionObjectWriterBuilderTest {
         assertEquals(RionFieldWriterDouble.class   , writer.fieldWriters[3].getClass());
         assertEquals(RionFieldWriterString.class   , writer.fieldWriters[4].getClass());
         assertEquals(RionFieldWriterString.class   , writer.fieldWriters[5].getClass());
-        assertEquals(RionFieldWriterCalendar.class , writer.fieldWriters[6].getClass());
+        assertEquals(RionFieldWriterString.class   , writer.fieldWriters[6].getClass());
+        assertEquals(RionFieldWriterString.class   , writer.fieldWriters[7].getClass());
+        assertEquals(RionFieldWriterCalendar.class , writer.fieldWriters[8].getClass());
     }
 
 

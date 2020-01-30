@@ -22,7 +22,7 @@ public class RionFieldWriterString extends RionFieldWriterBase implements IRionF
             String value = (String) field.get(sourceObject);
 
             if(value == null){
-                dest[destOffset++] = (byte) (255 & ((RionFieldTypes.UTF_8_SHORT << 4) | 0));
+                dest[destOffset++] = (byte) (255 & ((RionFieldTypes.UTF_8 << 4) | 0));
                 return 1;
             }
 
@@ -32,7 +32,7 @@ public class RionFieldWriterString extends RionFieldWriterBase implements IRionF
 
             int length = valueBytes.length;
 
-            if(length <= 15){
+            if(length > 0 && length <= 15){
                 dest[destOffset++] = (byte) (255 & ((RionFieldTypes.UTF_8_SHORT << 4) | length) );
                 System.arraycopy(valueBytes, 0, dest, destOffset, valueBytes.length);
 

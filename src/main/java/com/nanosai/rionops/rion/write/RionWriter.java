@@ -29,7 +29,6 @@ public class RionWriter {
     public byte[] dest      = null;
     public int index = 0;
 
-    //todo should these be called "complex" or "nested" ??
     private int[] compositeFieldStack = null; //used to store start indexes of complex fields that can contain nested fields.
     private int   compositeFieldStackIndex = -1; //start at -1 - will be incremented before first use.
 
@@ -133,15 +132,15 @@ public class RionWriter {
     }
 
     public void writeInt64(long value){
-        int ionFieldType = RionFieldTypes.INT_POS;
+        int rionFieldType = RionFieldTypes.INT_POS;
         if(value < 0){
-            ionFieldType = RionFieldTypes.INT_NEG;
+            rionFieldType = RionFieldTypes.INT_NEG;
             value  = -(value+1);
         }
 
         int length = byteLengthOfInt64Value(value);
 
-        this.dest[this.index++] = (byte) (0xFF & ((ionFieldType << 4) | length)); //todo optimize this so the shift left can be pre-calculated by the compiler?
+        this.dest[this.index++] = (byte) (0xFF & ((rionFieldType << 4) | length)); //todo optimize this so the shift left can be pre-calculated by the compiler?
 
         for(int i=(length-1)*8; i >= 0; i-=8){
             this.dest[this.index++] = (byte) (0xFF & (value >> i));
@@ -154,15 +153,15 @@ public class RionWriter {
             return ;
         }
 
-        int ionFieldType = RionFieldTypes.INT_POS;
+        int rionFieldType = RionFieldTypes.INT_POS;
         if(value < 0){
-            ionFieldType = RionFieldTypes.INT_NEG;
+            rionFieldType = RionFieldTypes.INT_NEG;
             value  = -(value+1);
         }
 
         int length = byteLengthOfInt64Value(value);
 
-        dest[index++] = (byte) (0xFF & ((ionFieldType << 4) | length));
+        dest[index++] = (byte) (0xFF & ((rionFieldType << 4) | length));
 
         for(int i=(length-1)*8; i >= 0; i-=8){
             dest[index++] = (byte) (0xFF & (value >> i));
@@ -269,7 +268,7 @@ public class RionWriter {
 
         int length         = value.length;
 
-        if(length <=15){
+        if(length >0 && length <=15){
             this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | length));
             System.arraycopy(value, 0, this.dest, this.index, length);
             this.index += length;
@@ -293,7 +292,7 @@ public class RionWriter {
             return ;
         }
 
-        if(sourceLength <=15){
+        if(sourceLength > 0 && sourceLength <=15){
             this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | sourceLength));
             System.arraycopy(source, sourceOffset, this.dest, this.index, sourceLength);
             this.index += sourceLength;
@@ -865,6 +864,11 @@ public class RionWriter {
      ======================================================
      */
 
+    public static int writeBytesNull(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.BYTES << 4)); //lengthLength = 0 means null value
+        return 1;
+    }
+
     public static int writeBytes(byte[] dest, int destOffset, byte[] value){
 
         if(value == null){
@@ -906,6 +910,11 @@ public class RionWriter {
         return 1 + lengthLength + sourceLength;
     }
 
+    public static int writeBooleanNull(byte[] dest, int destOffset){
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.BOOLEAN << 4));
+        return 1;
+    }
+
     public static int writeBoolean(byte[] dest, int destOffset, boolean value){
         if(value){
             dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.BOOLEAN << 4) | 1));
@@ -929,16 +938,21 @@ public class RionWriter {
 
     }
 
+    public static int writeInt64Null(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.INT_POS << 4));
+        return 1;
+    }
+
     public static int writeInt64(byte[] dest, int destOffset, long value){
-        int ionFieldType = RionFieldTypes.INT_POS;
+        int rionFieldType = RionFieldTypes.INT_POS;
         if(value < 0){
-            ionFieldType = RionFieldTypes.INT_NEG;
+            rionFieldType = RionFieldTypes.INT_NEG;
             value  = -(value+1);
         }
 
         int length = byteLengthOfInt64Value(value);
 
-        dest[destOffset++] = (byte) (0xFF & ((ionFieldType << 4) | length)); //todo optimize this so the shift left can be pre-calculated by the compiler?
+        dest[destOffset++] = (byte) (0xFF & ((rionFieldType << 4) | length)); //todo optimize this so the shift left can be pre-calculated by the compiler?
 
         for(int i=(length-1)*8; i >= 0; i-=8){
             dest[destOffset++] = (byte) (0xFF & (value >> i));
@@ -953,21 +967,26 @@ public class RionWriter {
             return 1;
         }
 
-        int ionFieldType = RionFieldTypes.INT_POS;
+        int rionFieldType = RionFieldTypes.INT_POS;
         if(value < 0){
-            ionFieldType = RionFieldTypes.INT_NEG;
+            rionFieldType = RionFieldTypes.INT_NEG;
             value  = -(value+1);
         }
 
         int length = byteLengthOfInt64Value(value);
 
-        dest[destOffset++] = (byte) (0xFF & ((ionFieldType << 4) | length));
+        dest[destOffset++] = (byte) (0xFF & ((rionFieldType << 4) | length));
 
         for(int i=(length-1)*8; i >= 0; i-=8){
             dest[destOffset++] = (byte) (0xFF & (value >> i));
         }
 
         return 1 + length;
+    }
+
+    public static int writeFloatNull(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.FLOAT << 4));
+        return 1;
     }
 
     public static int writeFloat32(byte[] dest, int destOffset, float value){
@@ -1028,6 +1047,11 @@ public class RionWriter {
         return 9;
     }
 
+    public static int writeUtf8Null(byte[] dest, int destOffset){
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.UTF_8 << 4));
+        return 1;
+    }
+
     public static int writeUtf8(byte[] dest, int destOffset, String value){
         if(value == null){
             dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.UTF_8 << 4));
@@ -1045,7 +1069,7 @@ public class RionWriter {
 
         int length         = utf8Bytes.length;
 
-        if(length <=15){
+        if(length > 0 && length <=15){
             dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | length));
             System.arraycopy(utf8Bytes, 0, dest, destOffset, length);
 
@@ -1073,7 +1097,7 @@ public class RionWriter {
 
         int length         = value.length;
 
-        if(length <= 15 ){
+        if(length > 0 && length <= 15 ){
             dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | length));
             System.arraycopy(value, 0, dest, destOffset, length);
             return 1 + length;
@@ -1097,7 +1121,7 @@ public class RionWriter {
             return 1;
         }
 
-        if(sourceLength <= 15 ){
+        if(sourceLength >0 && sourceLength <= 15 ){
             dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.UTF_8_SHORT << 4) | sourceLength));
             System.arraycopy(source, sourceOffset, dest, destOffset, sourceLength);
             return 1 + sourceLength;
@@ -1113,6 +1137,11 @@ public class RionWriter {
 
             return 1 + lengthLength + sourceLength;
         }
+    }
+
+    public static int writeUtcNull(byte[] dest, int destOffset){
+        dest[destOffset++] = (byte) (0xFF & (RionFieldTypes.UTC_DATE_TIME << 4));
+        return 1;
     }
 
     public static int writeUtc(byte[] dest, int destOffset, Calendar dateTime, int length) {
@@ -1255,6 +1284,11 @@ public class RionWriter {
         return 1 + length;
     }
 
+    public static int writeObjectNull(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.OBJECT << 4)));
+        return 1;
+    }
+
     public static int writeObjectBegin(byte[] dest, int destOffset, int lengthLength){
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.OBJECT << 4) | lengthLength));
 
@@ -1267,6 +1301,11 @@ public class RionWriter {
         for(int i=(lengthLength-1)*8; i >= 0; i-=8){
             dest[destOffset++] = (byte) (0xFF & (length >> i));
         }
+    }
+
+    public static int writeTableNull(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.TABLE << 4)));
+        return 1;
     }
 
     public static int writeTableBegin(byte[] dest, int destOffset, int lengthLength){
@@ -1316,6 +1355,12 @@ public class RionWriter {
             dest[destOffset++] = (byte) (0xFF & (elementCount >> i));
         }
     }
+
+    public static int writeArrayNull(byte[] dest, int destOffset) {
+        dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.ARRAY << 4)));
+        return 1;
+    }
+
 
     public static int writeArrayBegin(byte[] dest, int destOffset, int lengthLength){
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.ARRAY << 4) | lengthLength));
@@ -1393,6 +1438,7 @@ public class RionWriter {
     */
 
 
+    @Deprecated
     public static int writeComplexTypeId(byte[] dest, int destOffset, byte[] value) {
         int lengthLength = byteLengthOfInt64Value(value.length);
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));
@@ -1409,7 +1455,7 @@ public class RionWriter {
         return 2 + lengthLength + value.length;
     }
 
-
+    @Deprecated
     public static int writeComplexTypeVersion(byte[] dest, int destOffset, byte[] value) {
         int lengthLength = byteLengthOfInt64Value(value.length);
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));

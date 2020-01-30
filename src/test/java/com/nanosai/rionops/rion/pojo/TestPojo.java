@@ -14,8 +14,11 @@ public class TestPojo {
     public double  field3 = 123456.1234D;
     public String  field4 = "abcdefg";
     public String  field5 = "0123456789012345";
+    public String  field6 = "";
+    public String  field7 = null;
 
-    public Calendar field6 = new GregorianCalendar();
+
+    public Calendar field8 = new GregorianCalendar();
 
 
 

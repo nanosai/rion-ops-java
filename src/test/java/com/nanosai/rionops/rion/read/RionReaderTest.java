@@ -49,6 +49,10 @@ public class RionReaderTest {
         writer.writeUtf8 ((String) null);
         writer.writeUtf8 ("" );
         writer.writeUtf8 ("123" );
+        writer.writeUtf8 ((byte[]) null );
+        writer.writeUtf8 ((byte[]) null, 0, 0 );
+        writer.writeUtf8 (new byte[0]);
+        writer.writeUtf8 (new byte[0], 0, 0 );
 
         writer.writeUtcNull();
         writer.writeUtc (null, 9);
@@ -153,6 +157,29 @@ public class RionReaderTest {
         assertFalse(reader.isNull());
         assertEquals("123", reader.readUtf8String());
 
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertFalse(reader.isNull());
+        assertEquals(0, reader.fieldLength);
+        assertEquals("", reader.readUtf8String());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertFalse(reader.isNull());
+        assertEquals(0, reader.fieldLength);
+        assertEquals("", reader.readUtf8String());
+
+
         //UTC fields
         reader.nextParse();
         assertEquals(RionFieldTypes.UTC_DATE_TIME, reader.fieldType);
@@ -252,9 +279,12 @@ public class RionReaderTest {
         int index = 0;
         index += RionWriter.writeBytes(source, index, new byte[]{1, 2, 3, 4, 5});
         index += RionWriter.writeBytes(source, index, null);
+        index += RionWriter.writeBytesNull(source, index);
+
+        assertEquals(9, index);
 
         reader.setSource(source, 0, source.length);
-        reader.parse();
+        reader.nextParse();
 
         assertEquals(RionFieldTypes.BYTES, reader.fieldType);
         assertEquals(5, reader.fieldLength);
@@ -273,10 +303,15 @@ public class RionReaderTest {
         assertEquals(3, dest[1]);
         assertEquals(4, dest[2]);
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
+        length = reader.readBytes(dest, 0, 3);
+        assertEquals(0, length); // null field - no bytes read.
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
         length = reader.readBytes(dest, 0, 3);
         assertEquals(0, length);
+        assertTrue(reader.isNull());
     }
 
 
@@ -290,23 +325,32 @@ public class RionReaderTest {
         index += RionWriter.writeBoolean(source, index, true);
         index += RionWriter.writeBoolean(source, index, false);
         index += RionWriter.writeBooleanObj(source, index, null);
+        index += RionWriter.writeBooleanNull(source, index);
+
+        assertEquals(4, index);
 
         reader.parse();
         assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
         assertEquals(0, reader.fieldLength);
         assertTrue(reader.readBoolean());
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
         assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
         assertEquals(0, reader.fieldLength);
         assertFalse(reader.readBoolean());
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
         assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
         assertEquals(0, reader.fieldLength);
         assertNull(reader.readBooleanObj());
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(RionFieldTypes.BOOLEAN, reader.fieldType);
+        assertEquals(0, reader.fieldLength);
+        assertNull(reader.readBooleanObj());
+        assertTrue(reader.isNull());
+
     }
 
 
@@ -320,18 +364,25 @@ public class RionReaderTest {
         index += RionWriter.writeInt64(source, index,  65535);
         index += RionWriter.writeInt64(source, index, -65535);
         index += RionWriter.writeInt64Obj(source, index, null);
+        index += RionWriter.writeInt64Null(source, index);
+
+        assertEquals(8, index);
 
         reader.parse();
         assertEquals(65535, reader.readInt64());
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
         assertEquals(-65535, reader.readInt64());
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
         assertEquals(0   , reader.readInt64());
         assertEquals(null, reader.readInt64Obj());
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(0   , reader.readInt64());
+        assertEquals(null, reader.readInt64Obj());
+        assertTrue(reader.isNull());
     }
 
 
@@ -344,14 +395,22 @@ public class RionReaderTest {
 
         index += RionWriter.writeFloat32(source, index, 123.45F);
         index += RionWriter.writeFloat32Obj(source, index, null);
+        index += RionWriter.writeFloatNull(source, index);
 
-        reader.parse();
+        assertEquals(7, index);
+
+        reader.nextParse();
         assertEquals(123.45F, reader.readFloat32(), 0);
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
         assertEquals(0, reader.readFloat32(),0);
         assertNull(reader.readFloat32Obj());
+        assertTrue(reader.isNull());
+
+        reader.nextParse();
+        assertEquals(0, reader.readFloat32(),0);
+        assertNull(reader.readFloat32Obj());
+        assertTrue(reader.isNull());
 
     }
 
@@ -373,6 +432,7 @@ public class RionReaderTest {
         reader.parse();
         assertEquals(0, reader.readFloat64(),0);
         assertNull(reader.readFloat64Obj());
+        assertTrue(reader.isNull());
 
     }
 
@@ -383,7 +443,12 @@ public class RionReaderTest {
 
         int index = 0;
         index += RionWriter.writeUtf8(source, index, "Hellå");
+        assertEquals(7, index);
+        index += RionWriter.writeUtf8(source, index, "0123456789abcdef");
         index += RionWriter.writeUtf8(source, index, (String) null);
+        index += RionWriter.writeUtf8Null(source, index);
+
+        assertEquals(27, index);
 
         reader.setSource(source, 0, source.length);
         reader.parse();
@@ -408,13 +473,41 @@ public class RionReaderTest {
 
         assertEquals("Hellå", reader.readUtf8String());
 
-        reader.next();
-        reader.parse();
+        reader.nextParse();
+        assertEquals(RionFieldTypes.UTF_8, reader.fieldType);
+        assertEquals("0123456789abcdef", reader.readUtf8String());
+        length = reader.readUtf8(dest, 0, 16);
+        assertEquals(16, length);
+        assertEquals('0', dest[0]);
+        assertEquals('1', dest[1]);
+        assertEquals('2', dest[2]);
+        assertEquals('3', dest[3]);
+        assertEquals('4', dest[4]);
+        assertEquals('5', dest[5]);
+        assertEquals('6', dest[6]);
+        assertEquals('7', dest[7]);
+        assertEquals('8', dest[8]);
+        assertEquals('9', dest[9]);
+        assertEquals('a', dest[10]);
+        assertEquals('b', dest[11]);
+        assertEquals('c', dest[12]);
+        assertEquals('d', dest[13]);
+        assertEquals('e', dest[14]);
+        assertEquals('f', dest[15]);
+
+        reader.nextParse();
         length = reader.readUtf8(dest, 0, 3);
         assertEquals(0, length);
         assertNull  (reader.readUtf8String());
-    }
+        assertTrue(reader.isNull());
 
+        reader.nextParse();
+        length = reader.readUtf8(dest, 0, 3);
+        assertEquals(0, length);
+        assertNull  (reader.readUtf8String());
+        assertTrue(reader.isNull());
+
+    }
 
     @Test
     public void testReadUtcCalendar() {
@@ -431,9 +524,12 @@ public class RionReaderTest {
         calendar.set(Calendar.MILLISECOND, 999);
 
         int index = 0;
-        int bytesWritten = RionWriter.writeUtc(source, index, calendar, 9);
+        index += RionWriter.writeUtc(source, index, calendar, 9);
+        index += RionWriter.writeUtc(source, index, null, 9);
+        index += RionWriter.writeUtcNull(source, index);
 
-        reader.setSource(source, 0, bytesWritten);
+        assertEquals(12, index);
+        reader.setSource(source, 0, index);
 
         reader.parse();
         Calendar calendar2 = reader.readUtcCalendar();
@@ -447,6 +543,14 @@ public class RionReaderTest {
         assertEquals(999  , calendar2.get(Calendar.MILLISECOND)) ;
 
         assertEquals(TimeZone.getTimeZone("UTC")  , calendar2.getTimeZone()) ;
+
+        reader.nextParse();
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtcCalendar());
+
+        reader.nextParse();
+        assertTrue(reader.isNull());
+        assertNull(reader.readUtcCalendar());
 
     }
 

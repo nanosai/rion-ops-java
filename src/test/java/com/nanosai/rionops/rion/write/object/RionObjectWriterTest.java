@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Created by jjenkov on 04-11-2015.
  */
-public class IonObjectWriterTest {
+public class RionObjectWriterTest {
 
 
     @Test
@@ -24,7 +24,7 @@ public class IonObjectWriterTest {
         byte[] dest   = new byte[1024];
 
         TestPojo testPojo = new TestPojo();
-        Calendar calendar = testPojo.field6;
+        Calendar calendar = testPojo.field8;
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.set(Calendar.YEAR , 2014);
         calendar.set(Calendar.MONTH, 11);
@@ -39,7 +39,7 @@ public class IonObjectWriterTest {
 
         assertEquals((RionFieldTypes.OBJECT << 4) | 2, 255 & dest[index++]);  //object field started - 194 = object field type << 3 | 2 (sourceLength sourceLength)
         assertEquals(  0, 255 & dest[index++]);  //sourceLength of object - MSB
-        assertEquals(101, 255 & dest[index++]);  //sourceLength of object - LSB
+        assertEquals(118, 255 & dest[index++]);  //sourceLength of object - LSB
 
         assertEquals((RionFieldTypes.KEY_SHORT << 4) | 6, 255 & dest[index++]);   //lead byte of key field
         assertEquals('f', 255 & dest[index++]);   //value of char 1 field
@@ -149,6 +149,28 @@ public class IonObjectWriterTest {
         assertEquals('l', 255 & dest[index++]);   //value of char 4 field
         assertEquals('d', 255 & dest[index++]);   //value of char 5 field
         assertEquals('6', 255 & dest[index++]);  //value of char 6 field
+
+        assertEquals((RionFieldTypes.UTF_8 << 4) | 1, 255 & dest[index++]);  //lead byte of long field
+        assertEquals( 0, 255 & dest[index++]);  //field length
+
+        assertEquals((RionFieldTypes.KEY_SHORT << 4) | 6, 255 & dest[index++]);   //lead byte of key field
+        assertEquals('f', 255 & dest[index++]);   //value of char 1 field
+        assertEquals('i', 255 & dest[index++]);   //value of char 2 field
+        assertEquals('e', 255 & dest[index++]);   //value of char 3 field
+        assertEquals('l', 255 & dest[index++]);   //value of char 4 field
+        assertEquals('d', 255 & dest[index++]);   //value of char 5 field
+        assertEquals('7', 255 & dest[index++]);  //value of char 6 field
+
+        assertEquals((RionFieldTypes.UTF_8 << 4) | 0, 255 & dest[index++]);  //lead byte of long field
+
+
+        assertEquals((RionFieldTypes.KEY_SHORT << 4) | 6, 255 & dest[index++]);   //lead byte of key field
+        assertEquals('f', 255 & dest[index++]);   //value of char 1 field
+        assertEquals('i', 255 & dest[index++]);   //value of char 2 field
+        assertEquals('e', 255 & dest[index++]);   //value of char 3 field
+        assertEquals('l', 255 & dest[index++]);   //value of char 4 field
+        assertEquals('d', 255 & dest[index++]);   //value of char 5 field
+        assertEquals('8', 255 & dest[index++]);  //value of char 6 field
 
         assertEquals((RionFieldTypes.UTC_DATE_TIME << 4) | 7, 255 & dest[index++]);  //lead byte of long field
         assertEquals(2014 >> 8 , 255 & dest[index++]);
