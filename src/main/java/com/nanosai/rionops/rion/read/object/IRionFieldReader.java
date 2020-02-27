@@ -5,9 +5,15 @@ package com.nanosai.rionops.rion.read.object;
  */
 public interface IRionFieldReader {
 
+    public void setNull(Object destination);
     public int read(byte[] source, int sourceOffset, Object destination);
 
-    public void setNull(Object destination);
+    public int readAcyclic(byte[] source, int sourceOffset, Object destination);
+
+    public int readCyclic(byte[] source, int sourceOffset, Object destination, RionObjectReader.CyclicObjectGraphReadState readState);
+
+
+
 
 
 }

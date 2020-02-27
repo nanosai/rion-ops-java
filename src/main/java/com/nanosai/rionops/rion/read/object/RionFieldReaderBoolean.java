@@ -44,6 +44,16 @@ public class RionFieldReaderBoolean implements IRionFieldReader {
     }
 
     @Override
+    public int readAcyclic(byte[] source, int sourceOffset, Object destination) {
+        return read(source, sourceOffset, destination);
+    }
+
+    @Override
+    public int readCyclic(byte[] source, int sourceOffset, Object destination, RionObjectReader.CyclicObjectGraphReadState readState) {
+        return read(source, sourceOffset, destination);
+    }
+
+    @Override
     public void setNull(Object destination) {
 
     }

@@ -68,6 +68,7 @@ RION contains the following field types:
  - UTF-8
  - UTF-8 Short
  - UTC date time
+ - Reference (new)
  - Array (*)
  - Table
  - Object
@@ -127,6 +128,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.10.0  | Java 8+      | First implementation of the RION Reference field - used in object graph serialization / deserialization (issue #11). |
 | 0.9.1   | Java 8+      | More null support, related bug fixes, improved tests and code cleanup (issue #14). |
 | 0.9.0   | Java 8+      | Improved support for writing null fields in RionWriter. Bug fix of RionWriter.writeUtf8() which serialized empty string as UTF-8-Short null - not UTF-8 with length 0 (issue #14). |
 | 0.8.0   | Java 8+      | RionObjectWriterBuilder and RionObjectReaderBuilder classes added. |

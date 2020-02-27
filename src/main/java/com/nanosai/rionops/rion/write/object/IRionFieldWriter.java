@@ -9,5 +9,9 @@ public interface IRionFieldWriter {
     public int writeKeyField(byte[] destination, int destinationOffset);
     public int writeValueField(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength);
 
+    public int writeValueFieldAcyclic(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength);
+    public int writeValueFieldCyclic(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength, RionObjectWriter.CyclicObjectGraphWriteState state);
+
+    
 
 }

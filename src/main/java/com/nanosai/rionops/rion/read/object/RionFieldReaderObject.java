@@ -114,6 +114,116 @@ public class RionFieldReaderObject implements IRionFieldReader {
     }
 
 
+    @Override
+    public int readAcyclic(byte[] source, int sourceOffset, Object finalDestination) {
+        return read(source, sourceOffset, finalDestination);
+    }
+
+    @Override
+    public int readCyclic(byte[] source, int sourceOffset, Object finalDestination, RionObjectReader.CyclicObjectGraphReadState readState) {
+        int leadByte     = 255 & source[sourceOffset++];
+        int fieldType    = leadByte >> 4;
+        int extFieldType = -1;
+        int lengthLength = leadByte & 15;  // 15 = binary 00001111 - filters out 4 top bits
+
+        if(fieldType == RionFieldTypes.EXTENDED) {
+            extFieldType = 255 & source[sourceOffset++];
+        }
+
+        if(fieldType == RionFieldTypes.EXTENDED && extFieldType == RionFieldTypes.EXT_REFERENCE) {
+            //read reference field.
+            int referencedObjectIndex = 255 & source[sourceOffset++];
+            for(int i=1;i<lengthLength; i++){
+                referencedObjectIndex <<= 8;
+                referencedObjectIndex |= 255 & source[sourceOffset++];
+            }
+
+            Object destination = readState.getObject(referencedObjectIndex);
+
+            try {
+                this.field.set(finalDestination, destination);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            return 2 + lengthLength;
+        } else {
+            this.currentKeyFieldKey.setSource(source);
+
+            Object destination =  instantiateType();
+            readState.addObjectAsRead(destination);
+
+            //todo if not object - throw exception
+
+
+            if(lengthLength == 0){
+                return 1; //object field with value null is always 1 byte long.
+            }
+
+            int length = 255 & source[sourceOffset++];
+            for(int i=1; i<lengthLength; i++){
+                length <<= 8;
+                length |= 255 & source[sourceOffset++];
+            }
+            int endIndex = sourceOffset + length;
+
+            while(sourceOffset < endIndex){
+                leadByte     = 255 & source[sourceOffset++];
+                fieldType    = leadByte >> 4;
+                lengthLength = leadByte & 15;  // 15 = binary 00001111 - filters out 4 top bits
+
+                //todo can this be optimized with a switch statement?
+
+                //expect a key field
+                if(fieldType == RionFieldTypes.KEY || fieldType == RionFieldTypes.KEY_SHORT){
+
+                    //distinguish between length and lengthLength depending on compact key field or normal key field
+                    length = 0;
+                    if(fieldType == RionFieldTypes.KEY_SHORT){
+                        length = leadByte & 15;
+                    } else {
+                        for(int i=0; i<lengthLength; i++){
+                            length <<= 8;
+                            length |= 255 & source[sourceOffset++];
+                        }
+                    }
+
+                    this.currentKeyFieldKey.setOffsets(sourceOffset, length);
+
+                    IRionFieldReader reader = this.fieldReaderMap.get(this.currentKeyFieldKey);
+                    if(reader == null){
+                        reader = this.nopFieldReader;
+                    }
+
+                    //find beginning of next field value - then call field reader.
+                    sourceOffset += length;
+
+                    //todo check for end of object - if found, call reader.setNull() - no value field following the key field.
+
+                    int nextLeadByte  = 255 & source[sourceOffset];
+                    int nextFieldType = nextLeadByte >> 4;
+
+                    if(nextFieldType != RionFieldTypes.KEY && nextFieldType != RionFieldTypes.KEY_SHORT){
+                        sourceOffset += reader.readCyclic(source, sourceOffset, destination, readState);
+                    } else {
+                        //next field is also a key - meaning the previous key has a value of null (no value field following it).
+                        reader.setNull(destination);
+                    }
+                }
+
+            }
+
+            try {
+                this.field.set(finalDestination, destination);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            return 1 + lengthLength + length;
+        }
+    }
+
+
 
     @Override
     public void setNull(Object destination) {
