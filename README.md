@@ -19,7 +19,7 @@ RION Ops for Java is a toolkit for reading and writing the compact, fast, binary
 
 
 
-<a name="rion-ops-tutorial">
+<a name="rion-ops-tutorial"></a>
 
 # RION Ops Tutorial
 
@@ -115,7 +115,7 @@ If you want to use RION Ops with Maven, the Maven dependency for RION Ops looks 
     <dependency>
         <groupId>com.nanosai</groupId>
         <artifactId>rion-ops</artifactId>
-        <version>0.9.1</version>
+        <version>0.10.0</version>
     </dependency>
 
 Remember to substitute the version with the version of RION Ops you want to use. See the RION Ops version history in
@@ -128,7 +128,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
-| 0.10.0  | Java 8+      | First implementation of the RION Reference field - used in object graph serialization / deserialization (issue #11). |
+| 0.10.0  | Java 8+      | First implementation of the RION Reference field - used in object graph serialization / deserialization (issue #11). A few bug fixes of object read / write functionality. |
 | 0.9.1   | Java 8+      | More null support, related bug fixes, improved tests and code cleanup (issue #14). |
 | 0.9.0   | Java 8+      | Improved support for writing null fields in RionWriter. Bug fix of RionWriter.writeUtf8() which serialized empty string as UTF-8-Short null - not UTF-8 with length 0 (issue #14). |
 | 0.8.0   | Java 8+      | RionObjectWriterBuilder and RionObjectReaderBuilder classes added. |
