@@ -30,4 +30,17 @@ public abstract class RionFieldWriterBase implements IRionFieldWriter {
 
     @Override
     public abstract int writeValueField(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength);
+
+    @Override
+    public int writeValueFieldAcyclic(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength) {
+        //todo make writeValueField call this method instead - when preparing to deprecate writeValueField()
+        return writeValueField(sourceObject, destination, destinationOffset, maxLengthLength);
+    }
+
+    @Override
+    public int writeValueFieldCyclic(Object sourceObject, byte[] destination, int destinationOffset, int maxLengthLength, RionObjectWriter.CyclicObjectGraphWriteState state) {
+        return writeValueFieldAcyclic(sourceObject, destination, destinationOffset, maxLengthLength);
+    }
+
+
 }

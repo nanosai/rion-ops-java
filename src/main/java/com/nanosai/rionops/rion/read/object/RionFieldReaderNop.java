@@ -37,7 +37,7 @@ public class RionFieldReaderNop implements IRionFieldReader {
             case RionFieldTypes.EXTENDED : {
                 int fieldTypeExtended = source[sourceOffset++]; //read extended field type - first byte after lead byte
                 switch(fieldTypeExtended) {
-                    case RionFieldTypes.ELEMENT_COUNT : {
+                    case RionFieldTypes.EXT_ELEMENT_COUNT: {
                         return 1 + 1 + lengthLength; //element count uses extended short encoding.
                     }
                 }
@@ -55,6 +55,16 @@ public class RionFieldReaderNop implements IRionFieldReader {
             }
         }
 
+    }
+
+    @Override
+    public int readAcyclic(byte[] source, int sourceOffset, Object destination) {
+        return read(source, sourceOffset, destination);
+    }
+
+    @Override
+    public int readCyclic(byte[] source, int sourceOffset, Object destination, RionObjectReader.CyclicObjectGraphReadState readState) {
+        return read(source, sourceOffset, destination);
     }
 
     @Override

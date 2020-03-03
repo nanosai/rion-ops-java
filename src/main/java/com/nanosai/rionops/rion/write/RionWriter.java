@@ -2,7 +2,6 @@ package com.nanosai.rionops.rion.write;
 
 import com.nanosai.memops.objects.Bytes;
 import com.nanosai.rionops.rion.RionFieldTypes;
-import com.nanosai.rionops.rion.RionUtil;
 import com.nanosai.rionops.rion.types.RionKey;
 
 import java.io.UnsupportedEncodingException;
@@ -777,7 +776,7 @@ public class RionWriter {
     public void writeElementCount(long elementCount){
         int lengthLength = byteLengthOfInt64Value(elementCount);
         this.dest[this.index++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));
-        this.dest[this.index++] = RionFieldTypes.ELEMENT_COUNT; //extended type id follows after lead byte.
+        this.dest[this.index++] = RionFieldTypes.EXT_ELEMENT_COUNT; //extended type id follows after lead byte.
 
         for(int i=(lengthLength-1)*8; i >= 0; i-=8){
             this.dest[this.index++] = (byte) (0xFF & (elementCount >> i));
@@ -1442,7 +1441,7 @@ public class RionWriter {
     public static int writeComplexTypeId(byte[] dest, int destOffset, byte[] value) {
         int lengthLength = byteLengthOfInt64Value(value.length);
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));
-        dest[destOffset++] = (byte) RionFieldTypes.COMPLEX_TYPE_ID;
+        dest[destOffset++] = (byte) RionFieldTypes.EXT_COMPLEX_TYPE_ID;
 
         for(int i=(lengthLength-1)*8; i >= 0; i-=8){
             dest[destOffset++] = (byte) (0xFF & (value.length >> i));
@@ -1459,7 +1458,7 @@ public class RionWriter {
     public static int writeComplexTypeVersion(byte[] dest, int destOffset, byte[] value) {
         int lengthLength = byteLengthOfInt64Value(value.length);
         dest[destOffset++] = (byte) (0xFF & ((RionFieldTypes.EXTENDED << 4) | lengthLength));
-        dest[destOffset++] = (byte) RionFieldTypes.COMPLEX_TYPE_VERSION;
+        dest[destOffset++] = (byte) RionFieldTypes.EXT_COMPLEX_TYPE_VERSION;
 
         for(int i=(lengthLength-1)*8; i >= 0; i-=8){
             dest[destOffset++] = (byte) (0xFF & (value.length >> i));
