@@ -37,16 +37,26 @@ public class RionFieldReaderObject implements IRionFieldReader {
     public int read(byte[] source, int sourceOffset, Object finalDestination) {
         this.currentKeyFieldKey.setSource(source);
 
-        Object destination =  instantiateType();
+        Object destination =  instantiateType();  //todo move until after null check (lengthLength == 0) ??
 
         int leadByte = 255 & source[sourceOffset++];
         int fieldType = leadByte >> 4;
 
-        //todo if not object - throw exception
+        //todo if not object - throw exception ?
 
         int lengthLength = leadByte & 15;  // 15 = binary 00001111 - filters out 4 top bits
 
         if(lengthLength == 0){
+            //todo set null value on field ?
+            /*
+            try {
+                this.field.set(finalDestination, null);
+            } catch (IllegalAccessException e) {
+                //todo do something more intelligent here!
+                e.printStackTrace();
+            }
+             */
+
             return 1; //object field with value null is always 1 byte long.
         }
 
@@ -55,6 +65,7 @@ public class RionFieldReaderObject implements IRionFieldReader {
             length <<= 8;
             length |= 255 & source[sourceOffset++];
         }
+        int thisFieldLength = 1 + lengthLength + length;
         int endIndex = sourceOffset + length;
 
         while(sourceOffset < endIndex){
@@ -106,10 +117,12 @@ public class RionFieldReaderObject implements IRionFieldReader {
         try {
             this.field.set(finalDestination, destination);
         } catch (IllegalAccessException e) {
+            //todo do something more intelligent here!
             e.printStackTrace();
         }
 
-        return 1 + lengthLength + length;
+        //return 1 + lengthLength + length;
+        return thisFieldLength;
 
     }
 
@@ -125,6 +138,17 @@ public class RionFieldReaderObject implements IRionFieldReader {
         int fieldType    = leadByte >> 4;
         int extFieldType = -1;
         int lengthLength = leadByte & 15;  // 15 = binary 00001111 - filters out 4 top bits
+
+        //null check (lengthLength == 0) ?
+        if(lengthLength == 0) {
+            try {
+                this.field.set(finalDestination, null);
+            } catch (IllegalAccessException e) {
+                //todo do something more intelligent here!
+                e.printStackTrace();
+            }
+            return 1; // null fields are always only 1 byte long
+        }
 
         if(fieldType == RionFieldTypes.EXTENDED) {
             extFieldType = 255 & source[sourceOffset++];
@@ -155,16 +179,17 @@ public class RionFieldReaderObject implements IRionFieldReader {
 
             //todo if not object - throw exception
 
+            //todo is this nulll check necessary anymore, since we have already made a null check earlier?
+            //if(lengthLength == 0){
+            //    return 1; //object field with value null is always 1 byte long.
+            //}
 
-            if(lengthLength == 0){
-                return 1; //object field with value null is always 1 byte long.
-            }
-
-            int length = 255 & source[sourceOffset++];
+            int length = 255 & source[sourceOffset++];  //length gets overwritten - distinguish between outer field total length (object length) and nested field length
             for(int i=1; i<lengthLength; i++){
                 length <<= 8;
                 length |= 255 & source[sourceOffset++];
             }
+            int thisFieldLength =  1 + lengthLength + length;
             int endIndex = sourceOffset + length;
 
             while(sourceOffset < endIndex){
@@ -178,7 +203,7 @@ public class RionFieldReaderObject implements IRionFieldReader {
                 if(fieldType == RionFieldTypes.KEY || fieldType == RionFieldTypes.KEY_SHORT){
 
                     //distinguish between length and lengthLength depending on compact key field or normal key field
-                    length = 0;
+                    length = 0; //todo use another variable for this field's length, instead of overwriting object field's length.
                     if(fieldType == RionFieldTypes.KEY_SHORT){
                         length = leadByte & 15;
                     } else {
@@ -195,7 +220,7 @@ public class RionFieldReaderObject implements IRionFieldReader {
                         reader = this.nopFieldReader;
                     }
 
-                    //find beginning of next field value - then call field reader.
+                    //find beginning of next field after key / key short field - then call field reader.
                     sourceOffset += length;
 
                     //todo check for end of object - if found, call reader.setNull() - no value field following the key field.
@@ -204,7 +229,8 @@ public class RionFieldReaderObject implements IRionFieldReader {
                     int nextFieldType = nextLeadByte >> 4;
 
                     if(nextFieldType != RionFieldTypes.KEY && nextFieldType != RionFieldTypes.KEY_SHORT){
-                        sourceOffset += reader.readCyclic(source, sourceOffset, destination, readState);
+                        int fieldLength = reader.readCyclic(source, sourceOffset, destination, readState);
+                        sourceOffset += fieldLength;
                     } else {
                         //next field is also a key - meaning the previous key has a value of null (no value field following it).
                         reader.setNull(destination);
@@ -219,7 +245,10 @@ public class RionFieldReaderObject implements IRionFieldReader {
                 e.printStackTrace();
             }
 
-            return 1 + lengthLength + length;
+            //int totalLength = 1 + lengthLength + length;
+            //return totalLength;
+
+            return thisFieldLength;
         }
     }
 

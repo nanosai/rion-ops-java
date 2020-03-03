@@ -71,11 +71,13 @@ public class RionObjectReader<T> {
     }
 
 
+    @Deprecated //Use readAcyclic() instead
     public Object read(byte[] source, int sourceOffset){
         return read(source, sourceOffset, instantiateType());
     }
 
 
+    @Deprecated //Use readAcyclic() instead
     public Object read(byte[] source, int sourceOffset, Object dest){
         this.currentKeyFieldKey.setSource(source);
 
@@ -211,7 +213,8 @@ public class RionObjectReader<T> {
                 int nextFieldType = nextLeadByte >> 4;
 
                 if(nextFieldType != RionFieldTypes.KEY && nextFieldType != RionFieldTypes.KEY_SHORT){
-                    sourceOffset += fieldReader.readCyclic(source, sourceOffset, dest, this.readState);
+                    int fieldLength = fieldReader.readCyclic(source, sourceOffset, dest, this.readState);
+                    sourceOffset += fieldLength;
                 } else {
                     //next field is also a key - meaning the previous key has a value of null (no value field following it).
                     fieldReader.setNull(dest);
