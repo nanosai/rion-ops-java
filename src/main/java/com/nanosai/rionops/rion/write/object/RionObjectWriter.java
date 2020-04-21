@@ -53,12 +53,12 @@ public class RionObjectWriter<T> {
 
     /**
      *
-     * @param src
-     * @param maxLengthLength
-     * @param destination
-     * @param destinationOffset
-     * @Deprecated Use writeAcyclic instead - it has the same behaviour as writeObject() has.
-     * @return
+     * @param src The source object to write
+     * @param maxLengthLength The maximum length-length (no of length bytes) the object will need when serialized to RION.
+     * @param destination The byte array into which the serialized RION will be written.
+     * @param destinationOffset The offset into the byte array to start writing the RION data.
+     * @deprecated Use writeAcyclic instead - it has the same behaviour as writeObject() has.
+     * @return The number of bytes written to the destination byte array.
      */
 
 
