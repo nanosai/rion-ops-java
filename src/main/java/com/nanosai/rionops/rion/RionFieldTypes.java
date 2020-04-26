@@ -31,6 +31,7 @@ public class RionFieldTypes {
      */
 
     public static final int EXT_REFERENCE            =  0;  //extended short
+    public static final int EXT_ROW_REFERENCE        =  1;  //extended short
 
     @Deprecated
     public static final int EXT_ELEMENT_COUNT        = 16;  //extended short

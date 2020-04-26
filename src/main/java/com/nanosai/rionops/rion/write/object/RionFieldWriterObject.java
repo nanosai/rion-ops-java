@@ -77,7 +77,7 @@ public class RionFieldWriterObject extends RionFieldWriterBase implements IRionF
                 return 1;
             }
 
-            //todo check if this object has already been written to the output before.
+            // Check if this object has already been written to the output before.
             // If no  (objectIndex == -1), write the full RION field out (implemented below already).
             // If yes (objectIndex >=0), write a RION Reference field (needs to be implemented).
             int objectIndex = state.getObjectIndex(fieldValue);
