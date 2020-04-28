@@ -113,8 +113,21 @@ public class RionFieldWriterTable extends RionFieldWriterBase implements IRionFi
             // If yes (objectIndex >=0), write a RION Reference field (needs to be implemented).
             int objectIndex = state.getObjectIndex(array);
             if(objectIndex != -1){
-                //todo write array as RION Ref
+                //write Reference field instead.
+                int lengthOfObjectIndex = RionUtil.byteLengthOfInt64Value(objectIndex);
+                destination[destinationOffset++] = (byte) (255 & ((RionFieldTypes.EXTENDED << 4) | lengthOfObjectIndex));
+                destination[destinationOffset++] = (byte) (255 & RionFieldTypes.EXT_REFERENCE);
+
+                switch(lengthOfObjectIndex){
+                    case 4 : destination[destinationOffset++] = (byte) (255 & (objectIndex >> 24));
+                    case 3 : destination[destinationOffset++] = (byte) (255 & (objectIndex >> 16));
+                    case 2 : destination[destinationOffset++] = (byte) (255 & (objectIndex >>  8));
+                    case 1 : destination[destinationOffset++] = (byte) (255 & (objectIndex));
+                }
+
+                return 2 + lengthOfObjectIndex;
             }
+            state.addObjectWritten(array);
 
             int startIndex = destinationOffset;
             destination[destinationOffset] = (byte) (255 & (RionFieldTypes.TABLE << 4) | (maxLengthLength));
