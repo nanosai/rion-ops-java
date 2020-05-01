@@ -312,11 +312,9 @@ public class RionToHexConverterTest {
         String expected =
                  "B1 31\r\n"
                 +"    21 03\r\n"
-                +"\r\n"
                 +"    D1 03 414243\r\n"
                 +"    D1 03 444546\r\n"
                 +"    D1 03 474849\r\n"
-                +"\r\n"
                 +"    21 01\r\n"
                 +"    23 010203\r\n"
                 +"    23 ABCDEF\r\n"
