@@ -128,6 +128,7 @@ the next section.
 
 | Version | Java Version | Change |
 |---------|--------------|--------|
+| 0.11.0  | Java 8+      | Second round of cyclic graph support - now inside Table fields too. A few bug fixes and minor enhancements too. |
 | 0.10.0  | Java 8+      | First implementation of the RION Reference field - used in object graph serialization / deserialization (issue #11). A few bug fixes of object read / write functionality. |
 | 0.9.1   | Java 8+      | More null support, related bug fixes, improved tests and code cleanup (issue #14). |
 | 0.9.0   | Java 8+      | Improved support for writing null fields in RionWriter. Bug fix of RionWriter.writeUtf8() which serialized empty string as UTF-8-Short null - not UTF-8 with length 0 (issue #14). |

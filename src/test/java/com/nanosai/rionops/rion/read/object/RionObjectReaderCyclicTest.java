@@ -64,7 +64,7 @@ public class RionObjectReaderCyclicTest {
 
         assertSame(pojoArrayCyclicOut.children[0].children, pojoArrayCyclicOut.children[1].children);
         assertSame(pojoArrayCyclicOut.children[0].children[0], pojoArrayCyclicOut.children[1].children[0]);
-        
+
         assertEquals(1, pojoArrayCyclicOut.children[0].children.length);
 
 
