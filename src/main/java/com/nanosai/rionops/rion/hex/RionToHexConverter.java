@@ -65,10 +65,29 @@ public class RionToHexConverter {
                 break;
             }
 
+            case RionFieldTypes.EXTENDED: {
+                convertExtendedFieldShort(rionReader, dest, indentationLevel);
+                break;
+            }
+
         }
         if(rionReader.hasNext()){
             dest.append("\r\n");
         }
+    }
+
+    private void convertExtendedFieldShort(RionReader rionReader, StringBuilder dest, int indentationLevel) {
+        convertLeadByte(rionReader, dest);
+        dest.append(' ');
+        convertExtendedFieldType(rionReader, dest);
+        dest.append(' ');
+        //convertLengthBytes(rionReader, dest);
+        //dest.append(' ');
+        convertValueBytes(rionReader, dest);
+    }
+
+    private void convertExtendedFieldType(RionReader rionReader, StringBuilder dest) {
+        convertByte(dest, rionReader.fieldTypeExtended);
     }
 
     private void convertArrayField(RionReader rionReader, StringBuilder dest, int indentationLevel) {
@@ -94,6 +113,10 @@ public class RionToHexConverter {
 
     private void convertTableField(RionReader rionReader, StringBuilder dest, int indentationLevel) {
         convertLeadByte(rionReader, dest);
+        if(rionReader.isNull()) {
+            return;
+        }
+
         dest.append(' ');
         convertLengthBytes(rionReader, dest);
         dest.append("\r\n");
@@ -103,7 +126,7 @@ public class RionToHexConverter {
 
         //convert row count field
         convertField(rionReader, dest, indentationLevel + indentationIncrease);
-        dest.append("\r\n");
+        //dest.append("\r\n");
 
         //convert nested column elements
         int columnsPerRowCount = 0;
@@ -116,7 +139,7 @@ public class RionToHexConverter {
                 break;
             }
         }
-        dest.append("\r\n");
+        //dest.append("\r\n");
 
         //convert first non-Key nested field
         convertField(rionReader, dest, indentationLevel + indentationIncrease);
@@ -137,6 +160,10 @@ public class RionToHexConverter {
 
     private void convertObjectField(RionReader rionReader, StringBuilder dest, int indentationLevel) {
         convertLeadByte(rionReader, dest);
+        if(rionReader.isNull()){
+            return;
+        }
+
         dest.append(' ');
         convertLengthBytes(rionReader, dest);
         dest.append("\r\n");
@@ -183,6 +210,13 @@ public class RionToHexConverter {
 
     private void convertValueBytes(RionReader rionReader, StringBuilder dest) {
         for (int i = rionReader.index; i < rionReader.index + rionReader.fieldLength; i++) {
+            int byteValue = rionReader.source[i];
+            convertByte(dest, byteValue);
+        }
+    }
+
+    private void convertValueBytesExtendedField(RionReader rionReader, StringBuilder dest) {
+        for (int i = rionReader.index; i < rionReader.index + rionReader.fieldLengthLength; i++) {
             int byteValue = rionReader.source[i];
             convertByte(dest, byteValue);
         }
