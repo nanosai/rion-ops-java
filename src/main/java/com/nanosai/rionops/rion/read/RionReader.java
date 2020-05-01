@@ -133,7 +133,7 @@ public class RionReader {
                 switch(extendedFieldTypeDef) {
                     case EXTENDED_SHORT :  {
                         this.fieldLength = this.fieldLengthLength;
-
+                        this.nextIndex += LEAD_BYTE_LENGTH + EXTENDED_FIELD_TYPE_BYTE_LENGTH + this.fieldLengthLength;
                         break;
                     }
                     default :  {
